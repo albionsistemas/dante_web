@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title><%= title %></title>
+  <style>
+    .slide { display: none; max-width: 600px; }
+    .slide.active { display: block; }
+    .slide img, .slide video { max-width: 100%; }
+  </style>
+</head>
+<body>
+  <p><a href="/obras">&larr; Galería</a></p>
+  <h1><%= artwork.title %></h1>
+  <p>Por <%= artwork.artist.name %></p>
+
+  <% if (artwork.media.length > 0) { %>
+    <div id="slideshow">
+      <% artwork.media.forEach((item, index) => { %>
+        <div class="slide<%= index === 0 ? ' active' : '' %>" data-index="<%= index %>">
+          <% if (item.type === 'IMAGE') { %>
+            <img src="<%= item.url %>" alt="<%= item.altText || artwork.title %>" />
+          <% } else { %>
+            <video src="<%= item.url %>" controls <%= item.posterUrl ? `poster="${item.posterUrl}"` : '' %>></video>
+          <% } %>
+        </div>
+      <% }) %>
+
+      <% if (artwork.media.length > 1) { %>
+        <div>
+          <button id="slide-prev" type="button">&lsaquo; Anterior</button>
+          <span id="slide-counter">1 / <%= artwork.media.length %></span>
+          <button id="slide-next" type="button">Siguiente &rsaquo;</button>
+        </div>
+      <% } %>
+    </div>
+
+    <script>
+      (function () {
+        var slides = document.querySelectorAll('#slideshow .slide');
+        var counter = document.getElementById('slide-counter');
+        var current = 0;
+
+        function show(index) {
+          slides.forEach(function (slide, i) {
+            var isActive = i === index;
+            slide.classList.toggle('active', isActive);
+            var video = slide.querySelector('video');
+            if (video && !isActive) video.pause();
+          });
+          if (counter) counter.textContent = (index + 1) + ' / ' + slides.length;
+          current = index;
+        }
+
+        var prevBtn = document.getElementById('slide-prev');
+        var nextBtn = document.getElementById('slide-next');
+        if (prevBtn) prevBtn.addEventListener('click', function () { show((current - 1 + slides.length) % slides.length); });
+        if (nextBtn) nextBtn.addEventListener('click', function () { show((current + 1) % slides.length); });
+      })();
+    </script>
+  <% } %>
+
+  <% if (artwork.description) { %>
+    <p><%= artwork.description %></p>
+  <% } %>
+
+  <ul>
+    <% if (artwork.year) { %><li>Año: <%= artwork.year %></li><% } %>
+    <% if (artwork.widthCm || artwork.heightCm || artwork.depthCm) { %>
+      <li>Dimensiones: <%= artwork.widthCm || '?' %> x <%= artwork.heightCm || '?' %><%= artwork.depthCm ? ` x ${artwork.depthCm}` : '' %> cm</li>
+    <% } %>
+    <li>Tema: <%= artwork.theme %></li>
+    <li>Estilo: <%= artwork.style %></li>
+    <li>Técnica: <%= artwork.technique %></li>
+    <% if (artwork.support) { %><li>Soporte: <%= artwork.support %></li><% } %>
+    <% if (artwork.deliveryTime) { %><li>Tiempo de entrega: <%= artwork.deliveryTime %></li><% } %>
+    <% if (artwork.paymentMethods.length > 0) { %><li>Métodos de pago: <%= artwork.paymentMethods.join(', ') %></li><% } %>
+  </ul>
+
+  <p>
+    <% if (artwork.isPriceOnRequest) { %>
+      <strong>Precio a consultar</strong>
+    <% } else if (artwork.price) { %>
+      <% if (artwork.status === 'ON_SALE' && artwork.discountPercent) { %>
+        <span style="text-decoration:line-through;">$<%= artwork.price %></span>
+        <strong>$<%= (Number(artwork.price) * (1 - Number(artwork.discountPercent) / 100)).toFixed(2) %></strong>
+        (-<%= artwork.discountPercent %>%)
+      <% } else { %>
+        <strong>$<%= artwork.price %></strong>
+      <% } %>
+    <% } %>
+    <% if (artwork.status !== 'AVAILABLE' && artwork.status !== 'ON_SALE') { %> — <%= artwork.status %><% } %>
+    <% if (artwork.status === 'ON_SALE') { %> — <strong>En oferta</strong><% } %>
+  </p>
+</body>
+</html>

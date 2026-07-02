@@ -36,6 +36,7 @@ enum ArtworkTechnique {
 
 enum ArtworkStatus {
   AVAILABLE
+  ON_SALE
   SOLD
   RESERVED
   HIDDEN
@@ -109,6 +110,7 @@ model Artwork {
 
   price             Decimal?
   isPriceOnRequest  Boolean       @default(false) @map("is_price_on_request")
+  discountPercent   Decimal?      @map("discount_percent")
   status            ArtworkStatus @default(AVAILABLE)
   deliveryTime      String?       @map("delivery_time")
   paymentMethods    String[]      @map("payment_methods")

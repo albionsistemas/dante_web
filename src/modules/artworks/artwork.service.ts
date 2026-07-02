@@ -21,6 +21,30 @@ export function getArtworkById(id: string) {
   });
 }
 
+export function listPublicArtworks() {
+  return prisma.artwork.findMany({
+    where: { status: { not: 'HIDDEN' } },
+    include: { artist: true, media: { where: { isCover: true }, take: 1 } },
+    orderBy: { createdAt: 'desc' },
+  });
+}
+
+export async function getPublicArtworkBySlug(slug: string) {
+  const artwork = await prisma.artwork.findFirst({
+    where: { slug, status: { not: 'HIDDEN' } },
+    include: { artist: true, media: { orderBy: { order: 'asc' } } },
+  });
+
+  if (!artwork) return null;
+
+  await prisma.artwork.update({
+    where: { id: artwork.id },
+    data: { viewsCount: { increment: 1 } },
+  });
+
+  return artwork;
+}
+
 async function generateUniqueSlug(title: string, excludeId?: string): Promise<string> {
   const base = slugify(title) || 'obra';
   let slug = base;

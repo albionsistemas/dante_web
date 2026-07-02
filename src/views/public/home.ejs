@@ -7,6 +7,22 @@
 </head>
 <body>
   <h1>DANTE</h1>
-  <p>Setup base del proyecto funcionando. La galería y el diseño llegan en las próximas fases.</p>
+  <p>Obra plástica. <a href="/obras">Ver toda la galería &rarr;</a></p>
+
+  <% if (artworks.length > 0) { %>
+    <div style="display:flex; flex-wrap:wrap; gap:16px;">
+      <% artworks.forEach((artwork) => { %>
+        <% const cover = artwork.media[0]; %>
+        <a href="/obras/<%= artwork.slug %>" style="width:180px; text-decoration:none; color:inherit;">
+          <% if (cover && cover.type === 'IMAGE') { %>
+            <img src="<%= cover.url %>" alt="<%= artwork.title %>" width="180" />
+          <% } else if (cover && cover.type === 'VIDEO') { %>
+            <video src="<%= cover.url %>" width="180" muted></video>
+          <% } %>
+          <p><%= artwork.title %></p>
+        </a>
+      <% }) %>
+    </div>
+  <% } %>
 </body>
 </html>

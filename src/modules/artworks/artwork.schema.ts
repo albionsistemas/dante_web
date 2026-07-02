@@ -5,6 +5,10 @@ const emptyToUndefined = (value: unknown) => (value === '' ? undefined : value);
 const optionalString = z.preprocess(emptyToUndefined, z.string().trim().optional());
 const optionalInt = z.preprocess(emptyToUndefined, z.coerce.number().int().optional());
 const optionalDecimal = z.preprocess(emptyToUndefined, z.coerce.number().nonnegative().optional());
+const optionalPercent = z.preprocess(
+  emptyToUndefined,
+  z.coerce.number().min(0).max(100).optional(),
+);
 
 const THEME_VALUES = [
   'PORTRAIT',
@@ -19,7 +23,7 @@ const STYLE_VALUES = ['RENAISSANCE', 'BAROQUE', 'IMPRESSIONISM', 'CONTEMPORARY_O
 
 const TECHNIQUE_VALUES = ['OIL', 'ACRYLIC', 'WATERCOLOR', 'FRESCO'] as const;
 
-const STATUS_VALUES = ['AVAILABLE', 'SOLD', 'RESERVED', 'HIDDEN'] as const;
+const STATUS_VALUES = ['AVAILABLE', 'ON_SALE', 'SOLD', 'RESERVED', 'HIDDEN'] as const;
 
 export const artworkFormSchema = z.object({
   title: z.string().trim().min(1, 'El título es obligatorio.'),
@@ -37,6 +41,7 @@ export const artworkFormSchema = z.object({
   support: optionalString,
 
   price: optionalDecimal,
+  discountPercent: optionalPercent,
   isPriceOnRequest: z.preprocess((v) => v === 'on' || v === true, z.boolean()).default(false),
   status: z.enum(STATUS_VALUES).default('AVAILABLE'),
   deliveryTime: optionalString,

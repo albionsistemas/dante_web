@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title><%= title %></title>
+</head>
+<body>
+  <p><a href="/">DANTE</a></p>
+  <h1>Galería</h1>
+
+  <% if (artworks.length === 0) { %>
+    <p>Todavía no hay obras publicadas.</p>
+  <% } else { %>
+    <div style="display:flex; flex-wrap:wrap; gap:16px;">
+      <% artworks.forEach((artwork) => { %>
+        <% const cover = artwork.media[0]; %>
+        <a href="/obras/<%= artwork.slug %>" style="width:220px; text-decoration:none; color:inherit;">
+          <div>
+            <% if (cover && cover.type === 'IMAGE') { %>
+              <img src="<%= cover.url %>" alt="<%= artwork.title %>" width="220" />
+            <% } else if (cover && cover.type === 'VIDEO') { %>
+              <video src="<%= cover.url %>" width="220" muted></video>
+            <% } else { %>
+              <div style="width:220px; height:220px; background:#eee;"></div>
+            <% } %>
+          </div>
+          <p><strong><%= artwork.title %></strong></p>
+          <p><%= artwork.artist.name %></p>
+          <p>
+            <% if (artwork.isPriceOnRequest) { %>
+              Precio a consultar
+            <% } else if (artwork.price) { %>
+              <% if (artwork.status === 'ON_SALE' && artwork.discountPercent) { %>
+                <span style="text-decoration:line-through;">$<%= artwork.price %></span>
+                $<%= (Number(artwork.price) * (1 - Number(artwork.discountPercent) / 100)).toFixed(2) %>
+              <% } else { %>
+                $<%= artwork.price %>
+              <% } %>
+            <% } %>
+            <% if (artwork.status === 'ON_SALE') { %> — En oferta
+            <% } else if (artwork.status !== 'AVAILABLE') { %> — <%= artwork.status %><% } %>
+          </p>
+        </a>
+      <% }) %>
+    </div>
+  <% } %>
+</body>
+</html>
