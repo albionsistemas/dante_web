@@ -1,0 +1,8 @@
+node_modules/
+dist/
+.env
+public/uploads/*
+!public/uploads/.gitkeep
+public/css/tailwind.css
+*.log
+.DS_Store

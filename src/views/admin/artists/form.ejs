@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title><%= title %></title>
+</head>
+<body>
+  <p><a href="/admin/artists">&larr; Artistas</a></p>
+  <h1><%= artist ? 'Editar artista' : 'Nuevo artista' %></h1>
+
+  <form method="POST" action="<%= action %>" enctype="multipart/form-data">
+    <div>
+      <label for="name">Nombre *</label>
+      <input type="text" id="name" name="name" value="<%= values.name || '' %>" required />
+      <% if (errors.name) { %><p style="color:red;"><%= errors.name[0] %></p><% } %>
+    </div>
+
+    <div>
+      <label for="bio">Biografía</label>
+      <textarea id="bio" name="bio" rows="5"><%= values.bio || '' %></textarea>
+      <% if (errors.bio) { %><p style="color:red;"><%= errors.bio[0] %></p><% } %>
+    </div>
+
+    <div>
+      <label for="photo">Foto de perfil</label>
+      <input type="file" id="photo" name="photo" accept="image/jpeg,image/png,image/webp" />
+      <% if (artist && artist.photoUrl) { %>
+        <div><img src="<%= artist.photoUrl %>" alt="<%= artist.name %>" width="100" /></div>
+      <% } %>
+    </div>
+
+    <div>
+      <label for="nationality">Nacionalidad</label>
+      <input type="text" id="nationality" name="nationality" value="<%= values.nationality || '' %>" />
+    </div>
+
+    <div>
+      <label for="birthYear">Año de nacimiento</label>
+      <input type="number" id="birthYear" name="birthYear" value="<%= values.birthYear || '' %>" />
+      <% if (errors.birthYear) { %><p style="color:red;"><%= errors.birthYear[0] %></p><% } %>
+    </div>
+
+    <div>
+      <label for="deathYear">Año de fallecimiento</label>
+      <input type="number" id="deathYear" name="deathYear" value="<%= values.deathYear || '' %>" />
+      <% if (errors.deathYear) { %><p style="color:red;"><%= errors.deathYear[0] %></p><% } %>
+    </div>
+
+    <div>
+      <label for="email">Email</label>
+      <input type="email" id="email" name="email" value="<%= values.email || '' %>" />
+      <% if (errors.email) { %><p style="color:red;"><%= errors.email[0] %></p><% } %>
+    </div>
+
+    <div>
+      <label for="phone">Teléfono</label>
+      <input type="text" id="phone" name="phone" value="<%= values.phone || '' %>" />
+    </div>
+
+    <div>
+      <label for="website">Sitio web</label>
+      <input type="url" id="website" name="website" value="<%= values.website || '' %>" />
+      <% if (errors.website) { %><p style="color:red;"><%= errors.website[0] %></p><% } %>
+    </div>
+
+    <div>
+      <label for="instagram">Instagram</label>
+      <input type="text" id="instagram" name="instagram" value="<%= values.instagram || '' %>" />
+    </div>
+
+    <button type="submit"><%= artist ? 'Guardar cambios' : 'Crear artista' %></button>
+  </form>
+</body>
+</html>

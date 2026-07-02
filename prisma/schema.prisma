@@ -1,0 +1,158 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum AdminRole {
+  SUPER_ADMIN
+  EDITOR
+}
+
+enum ArtworkTheme {
+  PORTRAIT
+  LANDSCAPE
+  STILL_LIFE
+  HISTORY_PAINTING
+  GENRE_PAINTING
+  ABSTRACTION
+}
+
+enum ArtworkStyle {
+  RENAISSANCE
+  BAROQUE
+  IMPRESSIONISM
+  CONTEMPORARY_OTHER
+}
+
+enum ArtworkTechnique {
+  OIL
+  ACRYLIC
+  WATERCOLOR
+  FRESCO
+}
+
+enum ArtworkStatus {
+  AVAILABLE
+  SOLD
+  RESERVED
+  HIDDEN
+}
+
+enum ArtworkMediaType {
+  IMAGE
+  VIDEO
+}
+
+enum CommentStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+model Admin {
+  id           String    @id @default(uuid())
+  email        String    @unique
+  passwordHash String    @map("password_hash")
+  name         String
+  role         AdminRole @default(SUPER_ADMIN)
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime  @updatedAt @map("updated_at")
+
+  @@map("admins")
+}
+
+model Artist {
+  id   String @id @default(uuid())
+  name String
+  slug String @unique
+
+  bio         String?
+  photoUrl    String?  @map("photo_url")
+  nationality String?
+  birthYear   Int?     @map("birth_year")
+  deathYear   Int?     @map("death_year")
+
+  email    String?
+  phone    String?
+  website  String?
+  instagram String?
+
+  artworks Artwork[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("artists")
+}
+
+model Artwork {
+  id       String  @id @default(uuid())
+  title    String
+  slug     String  @unique
+  description String?
+
+  artistId String @map("artist_id")
+  artist   Artist @relation(fields: [artistId], references: [id], onDelete: Restrict)
+
+  year   Int?
+  widthCm  Decimal? @map("width_cm")
+  heightCm Decimal? @map("height_cm")
+  depthCm  Decimal? @map("depth_cm")
+
+  theme     ArtworkTheme
+  style     ArtworkStyle
+  technique ArtworkTechnique
+  support   String?
+
+  price             Decimal?
+  isPriceOnRequest  Boolean       @default(false) @map("is_price_on_request")
+  status            ArtworkStatus @default(AVAILABLE)
+  deliveryTime      String?       @map("delivery_time")
+  paymentMethods    String[]      @map("payment_methods")
+  cost              Decimal?
+
+  viewsCount Int @default(0) @map("views_count")
+
+  media    ArtworkMedia[]
+  comments Comment[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("artworks")
+}
+
+model ArtworkMedia {
+  id        String  @id @default(uuid())
+  artworkId String  @map("artwork_id")
+  artwork   Artwork @relation(fields: [artworkId], references: [id], onDelete: Cascade)
+
+  type      ArtworkMediaType @default(IMAGE)
+  url       String
+  posterUrl String?          @map("poster_url")
+  altText   String?          @map("alt_text")
+  isCover   Boolean          @default(false) @map("is_cover")
+  order     Int              @default(0)
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("artwork_media")
+}
+
+model Comment {
+  id        String  @id @default(uuid())
+  artworkId String  @map("artwork_id")
+  artwork   Artwork @relation(fields: [artworkId], references: [id], onDelete: Cascade)
+
+  authorName  String        @map("author_name")
+  authorEmail String        @map("author_email")
+  content     String
+  status      CommentStatus @default(PENDING)
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("comments")
+}
