@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title><%= title %></title>
+</head>
+<body>
+  <p><a href="/admin">&larr; Panel</a></p>
+  <h1>Obras</h1>
+
+  <% if (error) { %>
+    <p style="color: red;"><%= error %></p>
+  <% } %>
+
+  <p><a href="/admin/artworks/new">+ Nueva obra</a></p>
+
+  <% if (artworks.length === 0) { %>
+    <p>Todavía no hay obras cargadas.</p>
+  <% } else { %>
+    <table border="1" cellpadding="8" cellspacing="0">
+      <thead>
+        <tr>
+          <th>Portada</th>
+          <th>Título</th>
+          <th>Artista</th>
+          <th>Estado</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% artworks.forEach((artwork) => { %>
+          <tr>
+            <td>
+              <% const cover = artwork.media[0]; %>
+              <% if (cover && cover.type === 'IMAGE') { %>
+                <img src="<%= cover.url %>" alt="<%= artwork.title %>" width="60" />
+              <% } else if (cover && cover.type === 'VIDEO') { %>
+                <span>[video]</span>
+              <% } %>
+            </td>
+            <td><%= artwork.title %></td>
+            <td><%= artwork.artist.name %></td>
+            <td><%= artwork.status %></td>
+            <td>
+              <a href="/admin/artworks/<%= artwork.id %>/edit">Editar</a>
+              <form method="POST" action="/admin/artworks/<%= artwork.id %>?_method=DELETE" style="display:inline"
+                onsubmit="return confirm('¿Eliminar la obra «<%= artwork.title %>»?')">
+                <button type="submit">Eliminar</button>
+              </form>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  <% } %>
+</body>
+</html>
