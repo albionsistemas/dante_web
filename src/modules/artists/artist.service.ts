@@ -10,6 +10,23 @@ export function getArtistById(id: string) {
   return prisma.artist.findUnique({ where: { id } });
 }
 
+export function listPublicArtists() {
+  return prisma.artist.findMany({ orderBy: { name: 'asc' } });
+}
+
+export function getPublicArtistBySlug(slug: string) {
+  return prisma.artist.findUnique({
+    where: { slug },
+    include: {
+      artworks: {
+        where: { status: { not: 'HIDDEN' } },
+        include: { media: { where: { isCover: true }, take: 1 } },
+        orderBy: { createdAt: 'desc' },
+      },
+    },
+  });
+}
+
 async function generateUniqueSlug(name: string, excludeId?: string): Promise<string> {
   const base = slugify(name) || 'artista';
   let slug = base;

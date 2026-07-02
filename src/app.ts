@@ -8,6 +8,7 @@ import { errorHandler } from '@/middlewares/error-handler';
 import { authRouter } from '@/modules/auth/auth.routes';
 import { adminRouter } from '@/admin/admin.routes';
 import { galleryRouter } from '@/public/gallery.routes';
+import { publicArtistsRouter } from '@/public/artists.routes';
 import { listPublicArtworks } from '@/modules/artworks/artwork.service';
 
 export const app = express();
@@ -36,6 +37,7 @@ app.get('/', async (_req, res) => {
 });
 
 app.use('/obras', galleryRouter);
+app.use('/artistas', publicArtistsRouter);
 app.use('/admin', authRouter);
 app.use('/admin', adminRouter);
 

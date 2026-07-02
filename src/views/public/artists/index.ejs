@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title><%= title %></title>
+</head>
+<body>
+  <p><a href="/">DANTE</a></p>
+  <h1>Artistas</h1>
+
+  <% if (artists.length === 0) { %>
+    <p>Todavía no hay artistas publicados.</p>
+  <% } else { %>
+    <div style="display:flex; flex-wrap:wrap; gap:16px;">
+      <% artists.forEach((artist) => { %>
+        <a href="/artistas/<%= artist.slug %>" style="width:160px; text-decoration:none; color:inherit;">
+          <% if (artist.photoUrl) { %>
+            <img src="<%= artist.photoUrl %>" alt="<%= artist.name %>" width="160" />
+          <% } %>
+          <p><strong><%= artist.name %></strong></p>
+          <% if (artist.nationality) { %><p><%= artist.nationality %></p><% } %>
+        </a>
+      <% }) %>
+    </div>
+  <% } %>
+</body>
+</html>
