@@ -15,9 +15,30 @@ function paramSlug(req: Request): string {
   return Array.isArray(slug) ? slug[0] : slug;
 }
 
+const HERO_SLIDE_COUNT = 4;
+
+function buildHeroImages(artworks: Awaited<ReturnType<typeof listPublicArtworks>>): string[] {
+  const covers = artworks
+    .map((artwork) => artwork.media[0])
+    .filter((media): media is NonNullable<typeof media> => media?.type === 'IMAGE')
+    .map((media) => media.url);
+
+  if (covers.length === 0) return [];
+
+  const heroImages: string[] = [];
+  for (let i = 0; i < HERO_SLIDE_COUNT; i++) {
+    heroImages.push(covers[i % covers.length]);
+  }
+  return heroImages;
+}
+
 export async function index(_req: Request, res: Response) {
   const artworks = await listPublicArtworks();
-  res.render('public/gallery/index', { title: 'Galería — ArteReal', artworks });
+  res.render('public/gallery/index', {
+    title: 'Galería — ArteReal',
+    artworks,
+    heroImages: buildHeroImages(artworks),
+  });
 }
 
 export async function show(req: Request, res: Response) {

@@ -7,19 +7,38 @@
   <%- include('../../partials/nav') %>
 
   <main class="mx-auto max-w-6xl px-6 py-16">
-    <h1 class="font-serif text-3xl text-ink">Galería</h1>
+    <% if (heroImages.length > 0) { %>
+      <div class="relative h-[60vh] min-h-[22rem] overflow-hidden sm:h-[70vh]">
+        <% heroImages.forEach((url, index) => { %>
+          <div class="hero-slide absolute inset-0 bg-cream-dark bg-cover bg-center"
+            style="background-image: url('<%= url %>'); animation-delay: -<%= index * 6 %>s;"></div>
+        <% }) %>
+        <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-black/10"></div>
+        <div class="absolute inset-0 flex flex-col items-start justify-end px-6 pb-10 sm:px-10 sm:pb-14">
+          <h1 class="font-serif text-4xl text-overlay sm:text-5xl">Galería</h1>
+          <p class="mt-2 max-w-md text-sm text-overlay/80 sm:text-base">
+            Una selección curada de pinturas y obras originales.
+          </p>
+        </div>
+      </div>
+    <% } else { %>
+      <h1 class="font-serif text-3xl text-ink">Galería</h1>
+    <% } %>
 
     <% if (artworks.length === 0) { %>
       <p class="mt-8 text-ink-soft">Todavía no hay obras publicadas.</p>
     <% } else { %>
       <div class="mt-10 grid grid-cols-2 gap-x-8 gap-y-12 sm:grid-cols-3">
-        <% artworks.forEach((artwork) => { %>
-          <%- include('../../partials/artwork-card', { artwork }) %>
+        <% artworks.forEach((artwork, index) => { %>
+          <div class="reveal" style="transition-delay: <%= Math.min(index, 8) * 70 %>ms;">
+            <%- include('../../partials/artwork-card', { artwork }) %>
+          </div>
         <% }) %>
       </div>
     <% } %>
   </main>
 
   <%- include('../../partials/footer') %>
+  <%- include('../../partials/scroll-reveal') %>
 </body>
 </html>

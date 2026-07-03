@@ -9,6 +9,9 @@
   --color-bronze-dark: #6f5c44;
   --color-line: #e2ded4;
 
+  /* Fixed light text for content overlaid on photos (hero scrim), independent of light/dark theme. */
+  --color-overlay: #fbf9f5;
+
   --font-serif: Georgia, "Iowan Old Style", "Palatino Linotype", ui-serif, serif;
   --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
 }
@@ -38,4 +41,49 @@ body {
   background-color: var(--color-cream);
   color: var(--color-ink);
   transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* Hero cover: 4 stacked slides cross-fade in sequence, each slowly zooming (Ken Burns). */
+@keyframes hero-hold {
+  0% { opacity: 0; }
+  4% { opacity: 1; }
+  21% { opacity: 1; }
+  25% { opacity: 0; }
+  100% { opacity: 0; }
+}
+
+@keyframes hero-zoom {
+  0% { transform: scale(1); }
+  100% { transform: scale(1.12); }
+}
+
+.hero-slide {
+  animation: hero-hold 24s linear infinite, hero-zoom 24s ease-in-out infinite alternate;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-slide {
+    animation: none;
+    opacity: 1;
+  }
+}
+
+/* Scroll reveal: fades/slides content in as it enters the viewport (see scroll-reveal partial). */
+.reveal {
+  opacity: 0;
+  transform: translateY(1rem);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
 }
