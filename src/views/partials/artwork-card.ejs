@@ -25,5 +25,11 @@
       <% if (artwork.status === 'RESERVED') { %><span class="ml-2 text-xs uppercase tracking-wide text-ink-soft">Reservada</span><% } %>
       <% if (artwork.status === 'ON_SALE') { %><span class="ml-2 text-xs uppercase tracking-wide text-bronze-dark">Oferta</span><% } %>
     </p>
+    <p class="flex items-center gap-3 text-xs text-ink-soft">
+      <span><%= artwork.likesCount %> me gusta</span>
+      <% if (artwork.ratingCount > 0) { %>
+        <span>★ <%= (artwork.ratingSum / artwork.ratingCount).toFixed(1) %>/10</span>
+      <% } %>
+    </p>
   </div>
 </a>
