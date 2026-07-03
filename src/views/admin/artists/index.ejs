@@ -1,55 +1,59 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title><%= title %></title>
+  <%- include('../../partials/head', { title }) %>
 </head>
-<body>
-  <p><a href="/admin">&larr; Panel</a></p>
-  <h1>Artistas</h1>
+<body class="min-h-screen bg-cream font-sans text-ink antialiased">
+  <%- include('../../partials/admin-nav') %>
 
-  <% if (error) { %>
-    <p style="color: red;"><%= error %></p>
-  <% } %>
+  <main class="mx-auto max-w-6xl px-6 py-12">
+    <p><a href="/admin" class="text-sm uppercase tracking-wider text-ink-soft hover:text-bronze">&larr; Panel</a></p>
 
-  <p><a href="/admin/artists/new">+ Nuevo artista</a></p>
+    <div class="mt-4 flex items-center justify-between">
+      <h1 class="font-serif text-3xl text-ink">Artistas</h1>
+      <a href="/admin/artists/new" class="bg-ink px-4 py-2 text-sm uppercase tracking-wider text-cream hover:bg-bronze-dark">+ Nuevo artista</a>
+    </div>
 
-  <% if (artists.length === 0) { %>
-    <p>Todavía no hay artistas cargados.</p>
-  <% } else { %>
-    <table border="1" cellpadding="8" cellspacing="0">
-      <thead>
-        <tr>
-          <th>Foto</th>
-          <th>Nombre</th>
-          <th>Nacionalidad</th>
-          <th>Años</th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
-        <% artists.forEach((artist) => { %>
-          <tr>
-            <td>
-              <% if (artist.photoUrl) { %>
-                <img src="<%= artist.photoUrl %>" alt="<%= artist.name %>" width="60" />
-              <% } %>
-            </td>
-            <td><%= artist.name %></td>
-            <td><%= artist.nationality || '—' %></td>
-            <td><%= artist.birthYear || '?' %>–<%= artist.deathYear || '' %></td>
-            <td>
-              <a href="/admin/artists/<%= artist.id %>/edit">Editar</a>
-              <form method="POST" action="/admin/artists/<%= artist.id %>?_method=DELETE" style="display:inline"
-                onsubmit="return confirm('¿Eliminar a <%= artist.name %>?')">
-                <button type="submit">Eliminar</button>
-              </form>
-            </td>
+    <% if (error) { %>
+      <p class="mt-4 border border-red-200 bg-red-50 px-4 py-2 text-sm text-red-700"><%= error %></p>
+    <% } %>
+
+    <% if (artists.length === 0) { %>
+      <p class="mt-8 text-ink-soft">Todavía no hay artistas cargados.</p>
+    <% } else { %>
+      <table class="mt-8 w-full border-collapse text-left text-sm">
+        <thead>
+          <tr class="border-b border-line text-xs uppercase tracking-wider text-ink-soft">
+            <th class="py-3 pr-4 font-medium">Foto</th>
+            <th class="py-3 pr-4 font-medium">Nombre</th>
+            <th class="py-3 pr-4 font-medium">Nacionalidad</th>
+            <th class="py-3 pr-4 font-medium">Años</th>
+            <th class="py-3"></th>
           </tr>
-        <% }) %>
-      </tbody>
-    </table>
-  <% } %>
+        </thead>
+        <tbody>
+          <% artists.forEach((artist) => { %>
+            <tr class="border-b border-line">
+              <td class="py-3 pr-4">
+                <% if (artist.photoUrl) { %>
+                  <img src="<%= artist.photoUrl %>" alt="<%= artist.name %>" class="h-12 w-12 rounded-full object-cover" />
+                <% } %>
+              </td>
+              <td class="py-3 pr-4 text-ink"><%= artist.name %></td>
+              <td class="py-3 pr-4 text-ink-soft"><%= artist.nationality || '—' %></td>
+              <td class="py-3 pr-4 text-ink-soft"><%= artist.birthYear || '?' %>–<%= artist.deathYear || '' %></td>
+              <td class="py-3">
+                <a href="/admin/artists/<%= artist.id %>/edit" class="text-bronze-dark hover:underline">Editar</a>
+                <form method="POST" action="/admin/artists/<%= artist.id %>?_method=DELETE" class="ml-3 inline"
+                  onsubmit="return confirm('¿Eliminar a <%= artist.name %>?')">
+                  <button type="submit" class="text-red-700 hover:underline">Eliminar</button>
+                </form>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    <% } %>
+  </main>
 </body>
 </html>

@@ -1,0 +1,25 @@
+<div>
+  <label for="<%= id %>" class="block text-sm font-medium text-ink-soft"><%= label %></label>
+  <div class="relative mt-1">
+    <div class="flex">
+      <input type="number" id="<%= id %>" name="<%= name %>" value="<%= value || '' %>"
+        class="block w-full border border-line bg-white px-3 py-2 text-sm text-ink focus:border-bronze focus:outline-none focus:ring-1 focus:ring-bronze" />
+      <button type="button" data-year-toggle
+        class="border border-l-0 border-line bg-white px-3 text-ink-soft hover:border-bronze hover:text-bronze" aria-label="Elegir año">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <rect x="3" y="5" width="18" height="16" rx="1"></rect>
+          <path d="M3 10h18M8 3v4M16 3v4"></path>
+        </svg>
+      </button>
+    </div>
+    <div data-year-panel class="absolute z-20 mt-1 hidden w-56 border border-line bg-white p-3 shadow-lg">
+      <div class="flex items-center justify-between">
+        <button type="button" data-year-prev class="px-2 text-ink-soft hover:text-bronze">&lsaquo;</button>
+        <span data-year-range class="text-sm font-medium text-ink"></span>
+        <button type="button" data-year-next class="px-2 text-ink-soft hover:text-bronze">&rsaquo;</button>
+      </div>
+      <div data-year-grid class="mt-2 grid grid-cols-4 gap-1 text-sm"></div>
+    </div>
+  </div>
+  <% if (errorList) { %><p class="mt-1 text-sm text-red-700"><%= errorList[0] %></p><% } %>
+</div>

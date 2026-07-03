@@ -1,0 +1,65 @@
+<script>
+  (function () {
+    var panels = document.querySelectorAll('[data-year-panel]');
+
+    panels.forEach(function (panel) {
+      var container = panel.parentElement;
+      var input = container.querySelector('input[type="number"]');
+      var toggleBtn = container.querySelector('[data-year-toggle]');
+      var prevBtn = panel.querySelector('[data-year-prev]');
+      var nextBtn = panel.querySelector('[data-year-next]');
+      var rangeLabel = panel.querySelector('[data-year-range]');
+      var grid = panel.querySelector('[data-year-grid]');
+      var currentYear = new Date().getFullYear();
+      var startYear = Math.floor((parseInt(input.value, 10) || currentYear) / 12) * 12;
+
+      function render() {
+        rangeLabel.textContent = startYear + '-' + (startYear + 11);
+        grid.innerHTML = '';
+        for (var y = startYear; y < startYear + 12; y++) {
+          var btn = document.createElement('button');
+          btn.type = 'button';
+          btn.textContent = String(y);
+          var isSelected = String(y) === input.value;
+          btn.className = 'px-2 py-1 text-center hover:bg-cream-dark ' + (isSelected ? 'bg-ink text-cream hover:bg-ink' : 'text-ink');
+          btn.addEventListener('click', (function (year) {
+            return function () {
+              input.value = year;
+              panel.classList.add('hidden');
+            };
+          })(y));
+          grid.appendChild(btn);
+        }
+      }
+
+      toggleBtn.addEventListener('click', function (event) {
+        event.stopPropagation();
+        var wasHidden = panel.classList.contains('hidden');
+        panels.forEach(function (p) { p.classList.add('hidden'); });
+        if (wasHidden) {
+          startYear = Math.floor((parseInt(input.value, 10) || currentYear) / 12) * 12;
+          render();
+          panel.classList.remove('hidden');
+        }
+      });
+
+      prevBtn.addEventListener('click', function (event) {
+        event.stopPropagation();
+        startYear -= 12;
+        render();
+      });
+
+      nextBtn.addEventListener('click', function (event) {
+        event.stopPropagation();
+        startYear += 12;
+        render();
+      });
+
+      panel.addEventListener('click', function (event) { event.stopPropagation(); });
+    });
+
+    document.addEventListener('click', function () {
+      panels.forEach(function (p) { p.classList.add('hidden'); });
+    });
+  })();
+</script>

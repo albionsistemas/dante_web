@@ -37,13 +37,13 @@ function uploadedFiles(req: Request): Express.Multer.File[] {
 
 export async function index(_req: Request, res: Response) {
   const artworks = await listArtworks();
-  res.render('admin/artworks/index', { title: 'Obras — DANTE Admin', artworks, error: null });
+  res.render('admin/artworks/index', { title: 'Obras — ArteReal Admin', artworks, error: null });
 }
 
 export async function newForm(_req: Request, res: Response) {
   const artists = await listArtists();
   res.render('admin/artworks/form', {
-    title: 'Nueva obra — DANTE Admin',
+    title: 'Nueva obra — ArteReal Admin',
     artwork: null,
     artists,
     values: {},
@@ -59,7 +59,7 @@ export async function create(req: Request, res: Response) {
   if (!parsed.success) {
     const artists = await listArtists();
     return res.status(400).render('admin/artworks/form', {
-      title: 'Nueva obra — DANTE Admin',
+      title: 'Nueva obra — ArteReal Admin',
       artwork: null,
       artists,
       values: req.body,
@@ -85,7 +85,7 @@ export async function editForm(req: Request, res: Response) {
 
   const artists = await listArtists();
   res.render('admin/artworks/form', {
-    title: `Editar ${artwork.title} — DANTE Admin`,
+    title: `Editar ${artwork.title} — ArteReal Admin`,
     artwork,
     artists,
     values: artwork,
@@ -104,7 +104,7 @@ export async function update(req: Request, res: Response) {
   if (!parsed.success) {
     const artists = await listArtists();
     return res.status(400).render('admin/artworks/form', {
-      title: `Editar ${artwork.title} — DANTE Admin`,
+      title: `Editar ${artwork.title} — ArteReal Admin`,
       artwork,
       artists,
       values: req.body,

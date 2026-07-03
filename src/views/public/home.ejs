@@ -1,28 +1,33 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title><%= title %></title>
+  <%- include('../partials/head', { title }) %>
 </head>
-<body>
-  <h1>DANTE</h1>
-  <p>Obra plástica. <a href="/obras">Ver toda la galería &rarr;</a></p>
+<body class="bg-cream font-sans text-ink antialiased">
+  <%- include('../partials/nav') %>
 
-  <% if (artworks.length > 0) { %>
-    <div style="display:flex; flex-wrap:wrap; gap:16px;">
-      <% artworks.forEach((artwork) => { %>
-        <% const cover = artwork.media[0]; %>
-        <a href="/obras/<%= artwork.slug %>" style="width:180px; text-decoration:none; color:inherit;">
-          <% if (cover && cover.type === 'IMAGE') { %>
-            <img src="<%= cover.url %>" alt="<%= artwork.title %>" width="180" />
-          <% } else if (cover && cover.type === 'VIDEO') { %>
-            <video src="<%= cover.url %>" width="180" muted></video>
-          <% } %>
-          <p><%= artwork.title %></p>
-        </a>
-      <% }) %>
-    </div>
-  <% } %>
+  <main>
+    <section class="mx-auto max-w-6xl px-6 py-20 text-center">
+      <h1 class="font-serif text-4xl text-ink sm:text-5xl">Obra plástica</h1>
+      <p class="mx-auto mt-4 max-w-xl text-ink-soft">
+        Una selección curada de pinturas y obras originales.
+      </p>
+      <a href="/obras" class="mt-8 inline-block border border-ink px-6 py-2.5 text-sm uppercase tracking-wider text-ink transition hover:bg-ink hover:text-cream">
+        Ver toda la galería
+      </a>
+    </section>
+
+    <% if (artworks.length > 0) { %>
+      <section class="mx-auto max-w-6xl px-6 pb-24">
+        <div class="grid grid-cols-2 gap-x-8 gap-y-12 sm:grid-cols-3">
+          <% artworks.forEach((artwork) => { %>
+            <%- include('../partials/artwork-card', { artwork }) %>
+          <% }) %>
+        </div>
+      </section>
+    <% } %>
+  </main>
+
+  <%- include('../partials/footer') %>
 </body>
 </html>

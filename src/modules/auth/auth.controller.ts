@@ -5,7 +5,7 @@ import { authenticateAdmin, createSessionToken, parseDurationToMs } from '@/modu
 import { SESSION_COOKIE_NAME } from '@/middlewares/require-auth';
 
 export function showLoginForm(_req: Request, res: Response) {
-  res.render('admin/login', { title: 'Ingresar — DANTE Admin', error: null });
+  res.render('admin/login', { title: 'Ingresar — ArteReal Admin', error: null });
 }
 
 export async function login(req: Request, res: Response) {
@@ -13,7 +13,7 @@ export async function login(req: Request, res: Response) {
 
   if (!parsed.success) {
     return res.status(400).render('admin/login', {
-      title: 'Ingresar — DANTE Admin',
+      title: 'Ingresar — ArteReal Admin',
       error: 'Revisá el email y la contraseña ingresados.',
     });
   }
@@ -23,7 +23,7 @@ export async function login(req: Request, res: Response) {
 
   if (!admin) {
     return res.status(401).render('admin/login', {
-      title: 'Ingresar — DANTE Admin',
+      title: 'Ingresar — ArteReal Admin',
       error: 'Email o contraseña incorrectos.',
     });
   }

@@ -1,27 +1,31 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title><%= title %></title>
+  <%- include('../partials/head', { title }) %>
 </head>
-<body>
-  <h1>DANTE — Acceso administrativo</h1>
+<body class="flex min-h-screen items-center justify-center bg-cream font-sans text-ink antialiased">
+  <div class="w-full max-w-sm px-6">
+    <h1 class="text-center font-serif text-2xl text-ink">ArteReal <span class="text-base text-ink-soft">admin</span></h1>
 
-  <% if (error) { %>
-    <p style="color: red;"><%= error %></p>
-  <% } %>
+    <% if (error) { %>
+      <p class="mt-4 border border-red-200 bg-red-50 px-4 py-2 text-sm text-red-700"><%= error %></p>
+    <% } %>
 
-  <form method="POST" action="/admin/login">
-    <div>
-      <label for="email">Email</label>
-      <input type="email" id="email" name="email" required autofocus />
-    </div>
-    <div>
-      <label for="password">Contraseña</label>
-      <input type="password" id="password" name="password" required />
-    </div>
-    <button type="submit">Ingresar</button>
-  </form>
+    <form method="POST" action="/admin/login" class="mt-8 space-y-4">
+      <div>
+        <label for="email" class="block text-sm font-medium text-ink-soft">Email</label>
+        <input type="email" id="email" name="email" required autofocus
+          class="mt-1 block w-full border border-line bg-white px-3 py-2 text-sm text-ink focus:border-bronze focus:outline-none focus:ring-1 focus:ring-bronze" />
+      </div>
+      <div>
+        <label for="password" class="block text-sm font-medium text-ink-soft">Contraseña</label>
+        <input type="password" id="password" name="password" required
+          class="mt-1 block w-full border border-line bg-white px-3 py-2 text-sm text-ink focus:border-bronze focus:outline-none focus:ring-1 focus:ring-bronze" />
+      </div>
+      <button type="submit" class="w-full bg-ink px-5 py-2.5 text-sm uppercase tracking-wider text-cream hover:bg-bronze-dark">
+        Ingresar
+      </button>
+    </form>
+  </div>
 </body>
 </html>

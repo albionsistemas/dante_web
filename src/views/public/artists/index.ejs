@@ -1,28 +1,33 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title><%= title %></title>
+  <%- include('../../partials/head', { title }) %>
 </head>
-<body>
-  <p><a href="/">DANTE</a></p>
-  <h1>Artistas</h1>
+<body class="bg-cream font-sans text-ink antialiased">
+  <%- include('../../partials/nav') %>
 
-  <% if (artists.length === 0) { %>
-    <p>Todavía no hay artistas publicados.</p>
-  <% } else { %>
-    <div style="display:flex; flex-wrap:wrap; gap:16px;">
-      <% artists.forEach((artist) => { %>
-        <a href="/artistas/<%= artist.slug %>" style="width:160px; text-decoration:none; color:inherit;">
-          <% if (artist.photoUrl) { %>
-            <img src="<%= artist.photoUrl %>" alt="<%= artist.name %>" width="160" />
-          <% } %>
-          <p><strong><%= artist.name %></strong></p>
-          <% if (artist.nationality) { %><p><%= artist.nationality %></p><% } %>
-        </a>
-      <% }) %>
-    </div>
-  <% } %>
+  <main class="mx-auto max-w-6xl px-6 py-16">
+    <h1 class="font-serif text-3xl text-ink">Artistas</h1>
+
+    <% if (artists.length === 0) { %>
+      <p class="mt-8 text-ink-soft">Todavía no hay artistas publicados.</p>
+    <% } else { %>
+      <div class="mt-10 grid grid-cols-2 gap-x-8 gap-y-12 sm:grid-cols-4">
+        <% artists.forEach((artist) => { %>
+          <a href="/artistas/<%= artist.slug %>" class="group block text-center">
+            <div class="mx-auto aspect-square w-full max-w-[160px] overflow-hidden rounded-full bg-cream-dark">
+              <% if (artist.photoUrl) { %>
+                <img src="<%= artist.photoUrl %>" alt="<%= artist.name %>" class="h-full w-full object-cover transition duration-500 group-hover:scale-105" />
+              <% } %>
+            </div>
+            <p class="mt-4 font-serif text-lg text-ink"><%= artist.name %></p>
+            <% if (artist.nationality) { %><p class="text-sm text-ink-soft"><%= artist.nationality %></p><% } %>
+          </a>
+        <% }) %>
+      </div>
+    <% } %>
+  </main>
+
+  <%- include('../../partials/footer') %>
 </body>
 </html>

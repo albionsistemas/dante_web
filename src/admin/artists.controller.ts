@@ -24,12 +24,12 @@ function isForeignKeyViolation(err: unknown): boolean {
 
 export async function index(_req: Request, res: Response) {
   const artists = await listArtists();
-  res.render('admin/artists/index', { title: 'Artistas — DANTE Admin', artists, error: null });
+  res.render('admin/artists/index', { title: 'Artistas — ArteReal Admin', artists, error: null });
 }
 
 export function newForm(_req: Request, res: Response) {
   res.render('admin/artists/form', {
-    title: 'Nuevo artista — DANTE Admin',
+    title: 'Nuevo artista — ArteReal Admin',
     artist: null,
     values: {},
     errors: {},
@@ -43,7 +43,7 @@ export async function create(req: Request, res: Response) {
 
   if (!parsed.success) {
     return res.status(400).render('admin/artists/form', {
-      title: 'Nuevo artista — DANTE Admin',
+      title: 'Nuevo artista — ArteReal Admin',
       artist: null,
       values: req.body,
       errors: parsed.error.flatten().fieldErrors,
@@ -61,7 +61,7 @@ export async function editForm(req: Request, res: Response) {
   if (!artist) return res.status(404).render('public/404', { url: req.originalUrl });
 
   res.render('admin/artists/form', {
-    title: `Editar ${artist.name} — DANTE Admin`,
+    title: `Editar ${artist.name} — ArteReal Admin`,
     artist,
     values: artist,
     errors: {},
@@ -78,7 +78,7 @@ export async function update(req: Request, res: Response) {
 
   if (!parsed.success) {
     return res.status(400).render('admin/artists/form', {
-      title: `Editar ${artist.name} — DANTE Admin`,
+      title: `Editar ${artist.name} — ArteReal Admin`,
       artist,
       values: req.body,
       errors: parsed.error.flatten().fieldErrors,
@@ -100,7 +100,7 @@ export async function destroy(req: Request, res: Response) {
 
     const artists = await listArtists();
     res.status(isForeignKeyConstraint ? 409 : 500).render('admin/artists/index', {
-      title: 'Artistas — DANTE Admin',
+      title: 'Artistas — ArteReal Admin',
       artists,
       error: isForeignKeyConstraint
         ? 'No se puede eliminar: el artista tiene obras cargadas.'

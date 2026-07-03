@@ -1,11 +1,15 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <title>Error del servidor</title>
+  <%- include('../partials/head', { title: 'Error del servidor' }) %>
 </head>
-<body>
-  <h1>Ocurrió un error</h1>
-  <p><%= message %></p>
+<body class="flex min-h-screen flex-col bg-cream font-sans text-ink antialiased">
+  <%- include('../partials/nav') %>
+  <main class="mx-auto flex max-w-6xl flex-1 flex-col items-center justify-center px-6 py-24 text-center">
+    <h1 class="font-serif text-5xl text-ink">Ocurrió un error</h1>
+    <p class="mt-4 text-ink-soft"><%= message %></p>
+    <a href="/" class="mt-8 inline-block border border-ink px-6 py-2.5 text-sm uppercase tracking-wider hover:bg-ink hover:text-cream">Volver al inicio</a>
+  </main>
+  <%- include('../partials/footer') %>
 </body>
 </html>

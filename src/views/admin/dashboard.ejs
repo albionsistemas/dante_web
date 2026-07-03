@@ -1,15 +1,25 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title><%= title %></title>
+  <%- include('../partials/head', { title }) %>
 </head>
-<body>
-  <h1>Panel administrativo</h1>
-  <p>Hola, <%= admin.name %> (<%= admin.role %>).</p>
-  <form method="POST" action="/admin/logout">
-    <button type="submit">Cerrar sesión</button>
-  </form>
+<body class="min-h-screen bg-cream font-sans text-ink antialiased">
+  <%- include('../partials/admin-nav') %>
+
+  <main class="mx-auto max-w-6xl px-6 py-16">
+    <h1 class="font-serif text-3xl text-ink">Panel administrativo</h1>
+    <p class="mt-2 text-ink-soft">Hola, <%= admin.name %> (<%= admin.role %>).</p>
+
+    <div class="mt-10 grid gap-6 sm:grid-cols-2">
+      <a href="/admin/artists" class="block border border-line bg-white p-6 hover:border-bronze">
+        <h2 class="font-serif text-xl text-ink">Artistas</h2>
+        <p class="mt-1 text-sm text-ink-soft">Gestionar perfiles de artistas.</p>
+      </a>
+      <a href="/admin/artworks" class="block border border-line bg-white p-6 hover:border-bronze">
+        <h2 class="font-serif text-xl text-ink">Obras</h2>
+        <p class="mt-1 text-sm text-ink-soft">Gestionar obras, media y precios.</p>
+      </a>
+    </div>
+  </main>
 </body>
 </html>

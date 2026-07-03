@@ -4,8 +4,11 @@
   "description": "",
   "main": "dist/server.js",
   "scripts": {
-    "dev": "tsx watch src/server.ts",
-    "build": "tsc && tsc-alias",
+    "dev": "concurrently -n server,css \"npm:dev:server\" \"npm:css:watch\"",
+    "dev:server": "tsx watch src/server.ts",
+    "css:build": "tailwindcss -i ./src/styles/tailwind.css -o ./public/css/tailwind.css --minify",
+    "css:watch": "tailwindcss -i ./src/styles/tailwind.css -o ./public/css/tailwind.css --watch",
+    "build": "npm run css:build && tsc && tsc-alias",
     "start": "node dist/server.js",
     "prisma:studio": "prisma studio",
     "db:seed": "tsx prisma/seed.ts"
@@ -29,6 +32,7 @@
     "zod": "^4.4.3"
   },
   "devDependencies": {
+    "@tailwindcss/cli": "^4.3.2",
     "@types/bcryptjs": "^2.4.6",
     "@types/cookie-parser": "^1.4.10",
     "@types/express": "^5.0.6",
@@ -38,6 +42,7 @@
     "@types/node": "^26.1.0",
     "@types/pg": "^8.20.0",
     "autoprefixer": "^10.5.2",
+    "concurrently": "^10.0.3",
     "postcss": "^8.5.16",
     "prisma": "^7.8.0",
     "tailwindcss": "^4.3.2",

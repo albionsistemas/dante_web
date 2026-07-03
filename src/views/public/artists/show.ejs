@@ -1,59 +1,55 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title><%= title %></title>
+  <%- include('../../partials/head', { title }) %>
 </head>
-<body>
-  <p><a href="/artistas">&larr; Artistas</a></p>
+<body class="bg-cream font-sans text-ink antialiased">
+  <%- include('../../partials/nav') %>
 
-  <div style="display:flex; gap:24px; align-items:flex-start;">
-    <% if (artist.photoUrl) { %>
-      <img src="<%= artist.photoUrl %>" alt="<%= artist.name %>" width="200" />
-    <% } %>
-    <div>
-      <h1><%= artist.name %></h1>
-      <p>
-        <% if (artist.nationality) { %><%= artist.nationality %><% } %>
-        <% if (artist.birthYear) { %>
-          <% if (artist.nationality) { %> — <% } %>
-          <%= artist.birthYear %>–<%= artist.deathYear || '' %>
-        <% } %>
-      </p>
+  <main class="mx-auto max-w-6xl px-6 py-12">
+    <a href="/artistas" class="text-sm uppercase tracking-wider text-ink-soft hover:text-bronze">&larr; Artistas</a>
 
-      <% if (artist.bio) { %>
-        <p><%= artist.bio %></p>
+    <div class="mt-6 flex flex-col gap-8 sm:flex-row sm:items-start">
+      <% if (artist.photoUrl) { %>
+        <img src="<%= artist.photoUrl %>" alt="<%= artist.name %>" class="h-48 w-48 flex-shrink-0 rounded-full object-cover" />
       <% } %>
-
-      <p>
-        <% if (artist.website) { %>
-          <a href="<%= artist.website %>" target="_blank" rel="noopener noreferrer">Sitio web</a>
-        <% } %>
-        <% if (artist.instagram) { %>
-          <a href="https://instagram.com/<%= artist.instagram.replace(/^@/, '') %>" target="_blank" rel="noopener noreferrer">Instagram</a>
-        <% } %>
-      </p>
-    </div>
-  </div>
-
-  <h2>Obras</h2>
-  <% if (artist.artworks.length === 0) { %>
-    <p>Todavía no hay obras publicadas de este artista.</p>
-  <% } else { %>
-    <div style="display:flex; flex-wrap:wrap; gap:16px;">
-      <% artist.artworks.forEach((artwork) => { %>
-        <% const cover = artwork.media[0]; %>
-        <a href="/obras/<%= artwork.slug %>" style="width:180px; text-decoration:none; color:inherit;">
-          <% if (cover && cover.type === 'IMAGE') { %>
-            <img src="<%= cover.url %>" alt="<%= artwork.title %>" width="180" />
-          <% } else if (cover && cover.type === 'VIDEO') { %>
-            <video src="<%= cover.url %>" width="180" muted></video>
+      <div>
+        <h1 class="font-serif text-3xl text-ink"><%= artist.name %></h1>
+        <p class="mt-1 text-ink-soft">
+          <% if (artist.nationality) { %><%= artist.nationality %><% } %>
+          <% if (artist.birthYear) { %>
+            <% if (artist.nationality) { %> &middot; <% } %>
+            <%= artist.birthYear %>–<%= artist.deathYear || '' %>
           <% } %>
-          <p><%= artwork.title %></p>
-        </a>
-      <% }) %>
+        </p>
+
+        <% if (artist.bio) { %>
+          <p class="mt-4 max-w-2xl leading-relaxed text-ink-soft"><%= artist.bio %></p>
+        <% } %>
+
+        <p class="mt-4 flex gap-4 text-sm">
+          <% if (artist.website) { %>
+            <a href="<%= artist.website %>" target="_blank" rel="noopener noreferrer" class="text-bronze-dark hover:underline">Sitio web</a>
+          <% } %>
+          <% if (artist.instagram) { %>
+            <a href="https://instagram.com/<%= artist.instagram.replace(/^@/, '') %>" target="_blank" rel="noopener noreferrer" class="text-bronze-dark hover:underline">Instagram</a>
+          <% } %>
+        </p>
+      </div>
     </div>
-  <% } %>
+
+    <h2 class="mt-16 font-serif text-2xl text-ink">Obras</h2>
+    <% if (artist.artworks.length === 0) { %>
+      <p class="mt-4 text-ink-soft">Todavía no hay obras publicadas de este artista.</p>
+    <% } else { %>
+      <div class="mt-8 grid grid-cols-2 gap-x-8 gap-y-12 sm:grid-cols-3">
+        <% artist.artworks.forEach((artwork) => { %>
+          <%- include('../../partials/artwork-card', { artwork: { ...artwork, artist } }) %>
+        <% }) %>
+      </div>
+    <% } %>
+  </main>
+
+  <%- include('../../partials/footer') %>
 </body>
 </html>

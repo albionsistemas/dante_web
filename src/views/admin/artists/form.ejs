@@ -1,75 +1,82 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title><%= title %></title>
+  <%- include('../../partials/head', { title }) %>
 </head>
-<body>
-  <p><a href="/admin/artists">&larr; Artistas</a></p>
-  <h1><%= artist ? 'Editar artista' : 'Nuevo artista' %></h1>
+<body class="min-h-screen bg-cream font-sans text-ink antialiased">
+  <%- include('../../partials/admin-nav') %>
 
-  <form method="POST" action="<%= action %>" enctype="multipart/form-data">
-    <div>
-      <label for="name">Nombre *</label>
-      <input type="text" id="name" name="name" value="<%= values.name || '' %>" required />
-      <% if (errors.name) { %><p style="color:red;"><%= errors.name[0] %></p><% } %>
-    </div>
+  <main class="mx-auto max-w-2xl px-6 py-12">
+    <p><a href="/admin/artists" class="text-sm uppercase tracking-wider text-ink-soft hover:text-bronze">&larr; Artistas</a></p>
+    <h1 class="mt-4 font-serif text-3xl text-ink"><%= artist ? 'Editar artista' : 'Nuevo artista' %></h1>
 
-    <div>
-      <label for="bio">Biografía</label>
-      <textarea id="bio" name="bio" rows="5"><%= values.bio || '' %></textarea>
-      <% if (errors.bio) { %><p style="color:red;"><%= errors.bio[0] %></p><% } %>
-    </div>
+    <% const inputClass = "mt-1 block w-full border border-line bg-white px-3 py-2 text-sm text-ink focus:border-bronze focus:outline-none focus:ring-1 focus:ring-bronze"; %>
+    <% const labelClass = "block text-sm font-medium text-ink-soft"; %>
 
-    <div>
-      <label for="photo">Foto de perfil</label>
-      <input type="file" id="photo" name="photo" accept="image/jpeg,image/png,image/webp" />
-      <% if (artist && artist.photoUrl) { %>
-        <div><img src="<%= artist.photoUrl %>" alt="<%= artist.name %>" width="100" /></div>
-      <% } %>
-    </div>
+    <form method="POST" action="<%= action %>" enctype="multipart/form-data" class="mt-8 space-y-5">
+      <div>
+        <label for="name" class="<%= labelClass %>">Nombre *</label>
+        <input type="text" id="name" name="name" value="<%= values.name || '' %>" required class="<%= inputClass %>" />
+        <% if (errors.name) { %><p class="mt-1 text-sm text-red-700"><%= errors.name[0] %></p><% } %>
+      </div>
 
-    <div>
-      <label for="nationality">Nacionalidad</label>
-      <input type="text" id="nationality" name="nationality" value="<%= values.nationality || '' %>" />
-    </div>
+      <div>
+        <label for="bio" class="<%= labelClass %>">Biografía</label>
+        <textarea id="bio" name="bio" rows="5" class="<%= inputClass %>"><%= values.bio || '' %></textarea>
+        <% if (errors.bio) { %><p class="mt-1 text-sm text-red-700"><%= errors.bio[0] %></p><% } %>
+      </div>
 
-    <div>
-      <label for="birthYear">Año de nacimiento</label>
-      <input type="number" id="birthYear" name="birthYear" value="<%= values.birthYear || '' %>" />
-      <% if (errors.birthYear) { %><p style="color:red;"><%= errors.birthYear[0] %></p><% } %>
-    </div>
+      <div>
+        <label for="photo" class="<%= labelClass %>">Foto de perfil</label>
+        <input type="file" id="photo" name="photo" accept="image/jpeg,image/png,image/webp" class="mt-1 block w-full text-sm text-ink-soft" />
+        <% if (artist && artist.photoUrl) { %>
+          <img src="<%= artist.photoUrl %>" alt="<%= artist.name %>" class="mt-3 h-24 w-24 rounded-full object-cover" />
+        <% } %>
+      </div>
 
-    <div>
-      <label for="deathYear">Año de fallecimiento</label>
-      <input type="number" id="deathYear" name="deathYear" value="<%= values.deathYear || '' %>" />
-      <% if (errors.deathYear) { %><p style="color:red;"><%= errors.deathYear[0] %></p><% } %>
-    </div>
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label for="nationality" class="<%= labelClass %>">Nacionalidad</label>
+          <input type="text" id="nationality" name="nationality" value="<%= values.nationality || '' %>" class="<%= inputClass %>" />
+        </div>
+        <div></div>
+        <%- include('../../partials/year-field', { id: 'birthYear', name: 'birthYear', label: 'Año de nacimiento', value: values.birthYear, errorList: errors.birthYear }) %>
+        <%- include('../../partials/year-field', { id: 'deathYear', name: 'deathYear', label: 'Año de fallecimiento', value: values.deathYear, errorList: errors.deathYear }) %>
+      </div>
 
-    <div>
-      <label for="email">Email</label>
-      <input type="email" id="email" name="email" value="<%= values.email || '' %>" />
-      <% if (errors.email) { %><p style="color:red;"><%= errors.email[0] %></p><% } %>
-    </div>
+      <div class="border-t border-line pt-5">
+        <p class="text-xs uppercase tracking-wider text-ink-soft">Contacto (uso interno, no se publica)</p>
+        <div class="mt-3 grid grid-cols-2 gap-4">
+          <div>
+            <label for="email" class="<%= labelClass %>">Email</label>
+            <input type="email" id="email" name="email" value="<%= values.email || '' %>" class="<%= inputClass %>" />
+            <% if (errors.email) { %><p class="mt-1 text-sm text-red-700"><%= errors.email[0] %></p><% } %>
+          </div>
+          <div>
+            <label for="phone" class="<%= labelClass %>">Teléfono</label>
+            <input type="text" id="phone" name="phone" value="<%= values.phone || '' %>" class="<%= inputClass %>" />
+          </div>
+        </div>
+      </div>
 
-    <div>
-      <label for="phone">Teléfono</label>
-      <input type="text" id="phone" name="phone" value="<%= values.phone || '' %>" />
-    </div>
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label for="website" class="<%= labelClass %>">Sitio web</label>
+          <input type="url" id="website" name="website" value="<%= values.website || '' %>" class="<%= inputClass %>" />
+          <% if (errors.website) { %><p class="mt-1 text-sm text-red-700"><%= errors.website[0] %></p><% } %>
+        </div>
+        <div>
+          <label for="instagram" class="<%= labelClass %>">Instagram</label>
+          <input type="text" id="instagram" name="instagram" value="<%= values.instagram || '' %>" class="<%= inputClass %>" />
+        </div>
+      </div>
 
-    <div>
-      <label for="website">Sitio web</label>
-      <input type="url" id="website" name="website" value="<%= values.website || '' %>" />
-      <% if (errors.website) { %><p style="color:red;"><%= errors.website[0] %></p><% } %>
-    </div>
+      <button type="submit" class="bg-ink px-5 py-2.5 text-sm uppercase tracking-wider text-cream hover:bg-bronze-dark">
+        <%= artist ? 'Guardar cambios' : 'Crear artista' %>
+      </button>
+    </form>
+  </main>
 
-    <div>
-      <label for="instagram">Instagram</label>
-      <input type="text" id="instagram" name="instagram" value="<%= values.instagram || '' %>" />
-    </div>
-
-    <button type="submit"><%= artist ? 'Guardar cambios' : 'Crear artista' %></button>
-  </form>
+  <%- include('../../partials/year-picker-script') %>
 </body>
 </html>

@@ -1,97 +1,122 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title><%= title %></title>
-  <style>
-    .slide { display: none; max-width: 600px; }
-    .slide.active { display: block; }
-    .slide img, .slide video { max-width: 100%; }
-  </style>
+  <%- include('../../partials/head', { title }) %>
 </head>
-<body>
-  <p><a href="/obras">&larr; Galería</a></p>
-  <h1><%= artwork.title %></h1>
-  <p>Por <a href="/artistas/<%= artwork.artist.slug %>"><%= artwork.artist.name %></a></p>
+<body class="bg-cream font-sans text-ink antialiased">
+  <%- include('../../partials/nav') %>
 
-  <% if (artwork.media.length > 0) { %>
-    <div id="slideshow">
-      <% artwork.media.forEach((item, index) => { %>
-        <div class="slide<%= index === 0 ? ' active' : '' %>" data-index="<%= index %>">
-          <% if (item.type === 'IMAGE') { %>
-            <img src="<%= item.url %>" alt="<%= item.altText || artwork.title %>" />
-          <% } else { %>
-            <video src="<%= item.url %>" controls <%= item.posterUrl ? `poster="${item.posterUrl}"` : '' %>></video>
+  <main class="mx-auto max-w-6xl px-6 py-12">
+    <a href="/obras" class="text-sm uppercase tracking-wider text-ink-soft hover:text-bronze">&larr; Galería</a>
+
+    <div class="mt-6 grid gap-12 lg:grid-cols-2">
+      <div>
+        <% if (artwork.media.length > 0) { %>
+          <div id="slideshow" class="relative bg-cream-dark">
+            <% artwork.media.forEach((item, index) => { %>
+              <div class="slide<%= index === 0 ? ' active' : '' %> aspect-[4/5]" data-index="<%= index %>">
+                <% if (item.type === 'IMAGE') { %>
+                  <img src="<%= item.url %>" alt="<%= item.altText || artwork.title %>" class="h-full w-full object-contain" />
+                <% } else { %>
+                  <video src="<%= item.url %>" controls <%= item.posterUrl ? `poster="${item.posterUrl}"` : '' %> class="h-full w-full object-contain"></video>
+                <% } %>
+              </div>
+            <% }) %>
+
+            <% if (artwork.media.length > 1) { %>
+              <button id="slide-prev" type="button" aria-label="Anterior"
+                class="absolute left-3 top-1/2 -translate-y-1/2 flex h-9 w-9 items-center justify-center bg-cream/90 text-ink hover:bg-cream">&lsaquo;</button>
+              <button id="slide-next" type="button" aria-label="Siguiente"
+                class="absolute right-3 top-1/2 -translate-y-1/2 flex h-9 w-9 items-center justify-center bg-cream/90 text-ink hover:bg-cream">&rsaquo;</button>
+              <span id="slide-counter" class="absolute bottom-3 right-3 bg-cream/90 px-2 py-1 text-xs text-ink-soft">1 / <%= artwork.media.length %></span>
+            <% } %>
+          </div>
+
+          <style>
+            .slide { display: none; }
+            .slide.active { display: block; }
+          </style>
+
+          <script>
+            (function () {
+              var slides = document.querySelectorAll('#slideshow .slide');
+              var counter = document.getElementById('slide-counter');
+              var current = 0;
+
+              function show(index) {
+                slides.forEach(function (slide, i) {
+                  var isActive = i === index;
+                  slide.classList.toggle('active', isActive);
+                  var video = slide.querySelector('video');
+                  if (video && !isActive) video.pause();
+                });
+                if (counter) counter.textContent = (index + 1) + ' / ' + slides.length;
+                current = index;
+              }
+
+              var prevBtn = document.getElementById('slide-prev');
+              var nextBtn = document.getElementById('slide-next');
+              if (prevBtn) prevBtn.addEventListener('click', function () { show((current - 1 + slides.length) % slides.length); });
+              if (nextBtn) nextBtn.addEventListener('click', function () { show((current + 1) % slides.length); });
+            })();
+          </script>
+        <% } %>
+      </div>
+
+      <div>
+        <h1 class="font-serif text-3xl text-ink"><%= artwork.title %></h1>
+        <p class="mt-2 text-ink-soft">
+          Por <a href="/artistas/<%= artwork.artist.slug %>" class="text-bronze-dark hover:underline"><%= artwork.artist.name %></a>
+        </p>
+
+        <div class="mt-6 text-lg">
+          <% if (artwork.isPriceOnRequest) { %>
+            <span class="text-ink-soft">Precio a consultar</span>
+          <% } else if (artwork.price) { %>
+            <% if (artwork.status === 'ON_SALE' && artwork.discountPercent) { %>
+              <span class="text-ink-soft line-through">$<%= artwork.price %></span>
+              <span class="ml-2 font-medium text-bronze-dark">$<%= (Number(artwork.price) * (1 - Number(artwork.discountPercent) / 100)).toFixed(2) %></span>
+              <span class="ml-2 text-sm text-bronze-dark">(-<%= artwork.discountPercent %>%)</span>
+            <% } else { %>
+              <span class="text-ink">$<%= artwork.price %></span>
+            <% } %>
           <% } %>
-        </div>
-      <% }) %>
 
-      <% if (artwork.media.length > 1) { %>
-        <div>
-          <button id="slide-prev" type="button">&lsaquo; Anterior</button>
-          <span id="slide-counter">1 / <%= artwork.media.length %></span>
-          <button id="slide-next" type="button">Siguiente &rsaquo;</button>
+          <% const statusLabels = { AVAILABLE: 'Disponible', ON_SALE: 'En oferta', SOLD: 'Vendida', RESERVED: 'Reservada' }; %>
+          <span class="ml-3 align-middle text-xs uppercase tracking-wider text-ink-soft"><%= statusLabels[artwork.status] || artwork.status %></span>
         </div>
-      <% } %>
+
+        <% if (artwork.description) { %>
+          <p class="mt-6 leading-relaxed text-ink-soft"><%= artwork.description %></p>
+        <% } %>
+
+        <dl class="mt-8 space-y-2 border-t border-line pt-6 text-sm">
+          <% if (artwork.year) { %>
+            <div class="flex justify-between"><dt class="text-ink-soft">Año</dt><dd><%= artwork.year %></dd></div>
+          <% } %>
+          <% if (artwork.widthCm || artwork.heightCm || artwork.depthCm) { %>
+            <div class="flex justify-between">
+              <dt class="text-ink-soft">Dimensiones</dt>
+              <dd><%= artwork.widthCm || '?' %> × <%= artwork.heightCm || '?' %><%= artwork.depthCm ? ` × ${artwork.depthCm}` : '' %> cm</dd>
+            </div>
+          <% } %>
+          <div class="flex justify-between"><dt class="text-ink-soft">Técnica</dt><dd><%= artwork.technique %></dd></div>
+          <div class="flex justify-between"><dt class="text-ink-soft">Estilo</dt><dd><%= artwork.style %></dd></div>
+          <div class="flex justify-between"><dt class="text-ink-soft">Tema</dt><dd><%= artwork.theme %></dd></div>
+          <% if (artwork.support) { %>
+            <div class="flex justify-between"><dt class="text-ink-soft">Soporte</dt><dd><%= artwork.support %></dd></div>
+          <% } %>
+          <% if (artwork.deliveryTime) { %>
+            <div class="flex justify-between"><dt class="text-ink-soft">Entrega</dt><dd><%= artwork.deliveryTime %></dd></div>
+          <% } %>
+          <% if (artwork.paymentMethods.length > 0) { %>
+            <div class="flex justify-between"><dt class="text-ink-soft">Pago</dt><dd><%= artwork.paymentMethods.join(', ') %></dd></div>
+          <% } %>
+        </dl>
+      </div>
     </div>
+  </main>
 
-    <script>
-      (function () {
-        var slides = document.querySelectorAll('#slideshow .slide');
-        var counter = document.getElementById('slide-counter');
-        var current = 0;
-
-        function show(index) {
-          slides.forEach(function (slide, i) {
-            var isActive = i === index;
-            slide.classList.toggle('active', isActive);
-            var video = slide.querySelector('video');
-            if (video && !isActive) video.pause();
-          });
-          if (counter) counter.textContent = (index + 1) + ' / ' + slides.length;
-          current = index;
-        }
-
-        var prevBtn = document.getElementById('slide-prev');
-        var nextBtn = document.getElementById('slide-next');
-        if (prevBtn) prevBtn.addEventListener('click', function () { show((current - 1 + slides.length) % slides.length); });
-        if (nextBtn) nextBtn.addEventListener('click', function () { show((current + 1) % slides.length); });
-      })();
-    </script>
-  <% } %>
-
-  <% if (artwork.description) { %>
-    <p><%= artwork.description %></p>
-  <% } %>
-
-  <ul>
-    <% if (artwork.year) { %><li>Año: <%= artwork.year %></li><% } %>
-    <% if (artwork.widthCm || artwork.heightCm || artwork.depthCm) { %>
-      <li>Dimensiones: <%= artwork.widthCm || '?' %> x <%= artwork.heightCm || '?' %><%= artwork.depthCm ? ` x ${artwork.depthCm}` : '' %> cm</li>
-    <% } %>
-    <li>Tema: <%= artwork.theme %></li>
-    <li>Estilo: <%= artwork.style %></li>
-    <li>Técnica: <%= artwork.technique %></li>
-    <% if (artwork.support) { %><li>Soporte: <%= artwork.support %></li><% } %>
-    <% if (artwork.deliveryTime) { %><li>Tiempo de entrega: <%= artwork.deliveryTime %></li><% } %>
-    <% if (artwork.paymentMethods.length > 0) { %><li>Métodos de pago: <%= artwork.paymentMethods.join(', ') %></li><% } %>
-  </ul>
-
-  <p>
-    <% if (artwork.isPriceOnRequest) { %>
-      <strong>Precio a consultar</strong>
-    <% } else if (artwork.price) { %>
-      <% if (artwork.status === 'ON_SALE' && artwork.discountPercent) { %>
-        <span style="text-decoration:line-through;">$<%= artwork.price %></span>
-        <strong>$<%= (Number(artwork.price) * (1 - Number(artwork.discountPercent) / 100)).toFixed(2) %></strong>
-        (-<%= artwork.discountPercent %>%)
-      <% } else { %>
-        <strong>$<%= artwork.price %></strong>
-      <% } %>
-    <% } %>
-    <% if (artwork.status !== 'AVAILABLE' && artwork.status !== 'ON_SALE') { %> — <%= artwork.status %><% } %>
-    <% if (artwork.status === 'ON_SALE') { %> — <strong>En oferta</strong><% } %>
-  </p>
+  <%- include('../../partials/footer') %>
 </body>
 </html>

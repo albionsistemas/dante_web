@@ -1,0 +1,19 @@
+@import "tailwindcss";
+
+@theme {
+  --color-cream: #faf9f6;
+  --color-cream-dark: #f0ede6;
+  --color-ink: #1a1a1a;
+  --color-ink-soft: #4a4a45;
+  --color-bronze: #8b7355;
+  --color-bronze-dark: #6f5c44;
+  --color-line: #e2ded4;
+
+  --font-serif: Georgia, "Iowan Old Style", "Palatino Linotype", ui-serif, serif;
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+body {
+  background-color: var(--color-cream);
+  color: var(--color-ink);
+}

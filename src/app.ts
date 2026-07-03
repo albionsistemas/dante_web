@@ -33,7 +33,7 @@ app.get('/health', (_req, res) => {
 
 app.get('/', async (_req, res) => {
   const artworks = (await listPublicArtworks()).slice(0, 6);
-  res.render('public/home', { title: 'DANTE — Obra Plástica', artworks });
+  res.render('public/home', { title: 'ArteReal — Obra Plástica', artworks });
 });
 
 app.use('/obras', galleryRouter);
