@@ -15,11 +15,11 @@ async function main() {
 
   const admin = await prisma.admin.upsert({
     where: { email },
-    update: { name },
+    update: { name, passwordHash },
     create: { email, passwordHash, name, role: 'SUPER_ADMIN' },
   });
 
-  console.log(`Admin listo: ${admin.email} (contraseña sin cambios si ya existía).`);
+  console.log(`Admin listo: ${admin.email}.`);
 }
 
 main()
