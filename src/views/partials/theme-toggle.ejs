@@ -1,0 +1,37 @@
+<button id="theme-toggle" type="button" aria-label="Cambiar entre modo claro y oscuro"
+  class="flex h-8 w-8 items-center justify-center text-ink-soft hover:text-bronze">
+  <svg id="theme-icon-sun" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+    stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5">
+    <circle cx="12" cy="12" r="4" />
+    <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
+  </svg>
+  <svg id="theme-icon-moon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+    stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="hidden h-5 w-5">
+    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z" />
+  </svg>
+</button>
+
+<script>
+  (function () {
+    var button = document.getElementById('theme-toggle');
+    var sunIcon = document.getElementById('theme-icon-sun');
+    var moonIcon = document.getElementById('theme-icon-moon');
+
+    function isDark() {
+      return document.documentElement.classList.contains('dark');
+    }
+
+    function syncIcon() {
+      sunIcon.classList.toggle('hidden', isDark());
+      moonIcon.classList.toggle('hidden', !isDark());
+    }
+
+    syncIcon();
+
+    button.addEventListener('click', function () {
+      document.documentElement.classList.toggle('dark');
+      localStorage.setItem('theme', isDark() ? 'dark' : 'light');
+      syncIcon();
+    });
+  })();
+</script>

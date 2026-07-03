@@ -1,6 +1,9 @@
 <header class="border-b border-line bg-white">
   <div class="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-    <a href="/admin" class="font-serif text-xl tracking-wide text-ink">ArteReal <span class="text-sm text-ink-soft">admin</span></a>
+    <div class="flex items-center gap-3">
+      <a href="/admin" class="font-serif text-xl tracking-wide text-ink">ArteReal <span class="text-sm text-ink-soft">admin</span></a>
+      <%- include('theme-toggle') %>
+    </div>
     <nav class="flex items-center gap-6 text-sm uppercase tracking-wider text-ink-soft">
       <a href="/admin/artists" class="hover:text-bronze">Artistas</a>
       <a href="/admin/artworks" class="hover:text-bronze">Obras</a>

@@ -1,5 +1,32 @@
-<footer class="mt-24 border-t border-line">
-  <div class="mx-auto max-w-6xl px-6 py-10 text-sm text-ink-soft">
-    <p>&copy; <%= new Date().getFullYear() %> ArteReal — Obra Plástica</p>
+<footer class="mt-24 border-t border-line bg-cream-dark">
+  <div class="mx-auto max-w-6xl px-6 py-12">
+    <div class="grid gap-10 sm:grid-cols-3">
+      <div>
+        <a href="/" class="font-serif text-2xl tracking-wide text-ink">ArteReal</a>
+        <p class="mt-3 max-w-xs text-sm leading-relaxed text-ink-soft">
+          Una selección curada de obra plástica original: pinturas, técnicas y artistas para descubrir y coleccionar.
+        </p>
+      </div>
+
+      <div>
+        <p class="text-xs uppercase tracking-wider text-ink-soft">Explorar</p>
+        <nav class="mt-3 flex flex-col gap-2 text-sm">
+          <a href="/obras" class="text-ink-soft hover:text-bronze">Obras</a>
+          <a href="/artistas" class="text-ink-soft hover:text-bronze">Artistas</a>
+        </nav>
+      </div>
+
+      <div>
+        <p class="text-xs uppercase tracking-wider text-ink-soft">Para artistas y coleccionistas</p>
+        <p class="mt-3 max-w-xs text-sm leading-relaxed text-ink-soft">
+          ¿Te interesa una obra? Entrá a su ficha y dejanos tu consulta para coordinar la compra o un encargue.
+        </p>
+      </div>
+    </div>
+
+    <div class="mt-10 flex flex-col gap-2 border-t border-line pt-6 text-xs text-ink-soft sm:flex-row sm:items-center sm:justify-between">
+      <p>&copy; <%= new Date().getFullYear() %> ArteReal — Obra Plástica</p>
+      <a href="/admin" class="hover:text-bronze">Acceso administrativo</a>
+    </div>
   </div>
 </footer>
