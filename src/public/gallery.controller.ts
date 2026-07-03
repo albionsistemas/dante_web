@@ -1,5 +1,14 @@
 import { Request, Response } from 'express';
-import { getPublicArtworkBySlug, listPublicArtworks } from '@/modules/artworks/artwork.service';
+import { ratingSchema } from '@/modules/artworks/artwork.schema';
+import {
+  findPublicArtworkBySlug,
+  getPublicArtworkBySlug,
+  likeArtwork,
+  listPublicArtworks,
+  rateArtwork,
+} from '@/modules/artworks/artwork.service';
+
+const ENGAGEMENT_COOKIE_MAX_AGE = 365 * 24 * 60 * 60 * 1000;
 
 function paramSlug(req: Request): string {
   const { slug } = req.params;
@@ -15,5 +24,47 @@ export async function show(req: Request, res: Response) {
   const artwork = await getPublicArtworkBySlug(paramSlug(req));
   if (!artwork) return res.status(404).render('public/404', { url: req.originalUrl });
 
-  res.render('public/gallery/show', { title: `${artwork.title} — ArteReal`, artwork });
+  res.render('public/gallery/show', {
+    title: `${artwork.title} — ArteReal`,
+    artwork,
+    hasLiked: Boolean(req.cookies[`like_${artwork.id}`]),
+    myRating: Number(req.cookies[`rating_${artwork.id}`]) || null,
+    consultaOk: req.query.consulta === 'ok',
+    contactErrors: {},
+    contactValues: {},
+  });
+}
+
+export async function like(req: Request, res: Response) {
+  const slug = paramSlug(req);
+  const artwork = await findPublicArtworkBySlug(slug);
+  if (!artwork) return res.status(404).render('public/404', { url: req.originalUrl });
+
+  const cookieName = `like_${artwork.id}`;
+  if (!req.cookies[cookieName]) {
+    await likeArtwork(artwork.id);
+    res.cookie(cookieName, '1', { maxAge: ENGAGEMENT_COOKIE_MAX_AGE, httpOnly: true, sameSite: 'lax' });
+  }
+
+  res.redirect(`/obras/${slug}#interaccion`);
+}
+
+export async function rate(req: Request, res: Response) {
+  const slug = paramSlug(req);
+  const artwork = await findPublicArtworkBySlug(slug);
+  if (!artwork) return res.status(404).render('public/404', { url: req.originalUrl });
+
+  const parsed = ratingSchema.safeParse(req.body);
+  if (parsed.success) {
+    const cookieName = `rating_${artwork.id}`;
+    const previous = Number(req.cookies[cookieName]) || undefined;
+    await rateArtwork(artwork.id, parsed.data.value, previous);
+    res.cookie(cookieName, String(parsed.data.value), {
+      maxAge: ENGAGEMENT_COOKIE_MAX_AGE,
+      httpOnly: true,
+      sameSite: 'lax',
+    });
+  }
+
+  res.redirect(`/obras/${slug}#interaccion`);
 }

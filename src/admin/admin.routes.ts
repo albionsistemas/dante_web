@@ -3,6 +3,7 @@ import { requireAuth } from '@/middlewares/require-auth';
 import { showDashboard } from '@/admin/dashboard.controller';
 import * as artistsController from '@/admin/artists.controller';
 import * as artworksController from '@/admin/artworks.controller';
+import * as contactRequestsController from '@/admin/contact-requests.controller';
 import { uploadArtistPhoto, uploadArtworkMedia } from '@/lib/upload';
 
 export const adminRouter = Router();
@@ -27,3 +28,6 @@ adminRouter.delete('/artworks/:id', artworksController.destroy);
 adminRouter.post('/artworks/:id/media/:mediaId/move', artworksController.moveMedia);
 adminRouter.put('/artworks/:id/media/:mediaId/cover', artworksController.makeCover);
 adminRouter.delete('/artworks/:id/media/:mediaId', artworksController.destroyMedia);
+
+adminRouter.get('/consultas', contactRequestsController.index);
+adminRouter.put('/consultas/:id', contactRequestsController.updateStatus);

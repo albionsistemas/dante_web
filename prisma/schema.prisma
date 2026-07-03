@@ -53,6 +53,12 @@ enum CommentStatus {
   REJECTED
 }
 
+enum ContactRequestStatus {
+  PENDING
+  CONTACTED
+  CLOSED
+}
+
 model Admin {
   id           String    @id @default(uuid())
   email        String    @unique
@@ -116,10 +122,14 @@ model Artwork {
   paymentMethods    String[]      @map("payment_methods")
   cost              Decimal?
 
-  viewsCount Int @default(0) @map("views_count")
+  viewsCount  Int @default(0) @map("views_count")
+  likesCount  Int @default(0) @map("likes_count")
+  ratingSum   Int @default(0) @map("rating_sum")
+  ratingCount Int @default(0) @map("rating_count")
 
-  media    ArtworkMedia[]
-  comments Comment[]
+  media           ArtworkMedia[]
+  comments        Comment[]
+  contactRequests ContactRequest[]
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
@@ -157,4 +167,22 @@ model Comment {
   createdAt DateTime @default(now()) @map("created_at")
 
   @@map("comments")
+}
+
+model ContactRequest {
+  id        String  @id @default(uuid())
+  artworkId String  @map("artwork_id")
+  artwork   Artwork @relation(fields: [artworkId], references: [id], onDelete: Cascade)
+
+  name    String
+  email   String
+  phone   String?
+  message String
+
+  status ContactRequestStatus @default(PENDING)
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("contact_requests")
 }

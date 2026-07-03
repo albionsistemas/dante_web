@@ -113,8 +113,113 @@
             <div class="flex justify-between"><dt class="text-ink-soft">Pago</dt><dd><%= artwork.paymentMethods.join(', ') %></dd></div>
           <% } %>
         </dl>
+
+        <div id="interaccion" class="mt-8 border-t border-line pt-6">
+          <div class="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-ink-soft">
+            <span><%= artwork.viewsCount %> vistas</span>
+            <span><%= artwork.likesCount %> me gusta</span>
+            <span>
+              <% if (artwork.ratingCount > 0) { %>
+                Valoración <%= (artwork.ratingSum / artwork.ratingCount).toFixed(1) %>/10 (<%= artwork.ratingCount %>)
+              <% } else { %>
+                Sin valoraciones todavía
+              <% } %>
+            </span>
+          </div>
+
+          <div class="mt-4 flex flex-wrap items-center gap-3">
+            <form method="POST" action="/obras/<%= artwork.slug %>/like">
+              <button type="submit" <%= hasLiked ? 'disabled' : '' %>
+                class="border border-line px-4 py-2 text-sm uppercase tracking-wider text-ink hover:border-bronze disabled:cursor-default disabled:opacity-50 disabled:hover:border-line">
+                <%= hasLiked ? 'Ya te gusta ♥' : 'Me gusta' %>
+              </button>
+            </form>
+
+            <form method="POST" action="/obras/<%= artwork.slug %>/rating" class="flex items-center gap-2">
+              <label for="rating-value" class="text-sm text-ink-soft">Tu valoración</label>
+              <select id="rating-value" name="value" class="border border-line bg-white px-2 py-2 text-sm text-ink focus:border-bronze focus:outline-none">
+                <% for (let i = 1; i <= 10; i++) { %>
+                  <option value="<%= i %>" <%= myRating === i ? 'selected' : '' %>><%= i %></option>
+                <% } %>
+              </select>
+              <button type="submit" class="border border-line px-4 py-2 text-sm uppercase tracking-wider text-ink hover:border-bronze">
+                <%= myRating ? 'Actualizar' : 'Valorar' %>
+              </button>
+            </form>
+          </div>
+
+          <div class="mt-4 flex flex-wrap items-center gap-4 text-sm">
+            <span class="text-ink-soft">Compartir:</span>
+            <a id="share-whatsapp" href="#" target="_blank" rel="noopener" class="text-bronze-dark hover:underline">WhatsApp</a>
+            <a id="share-email" href="#" class="text-bronze-dark hover:underline">Email</a>
+            <button id="share-copy" type="button" class="text-bronze-dark hover:underline">Copiar enlace</button>
+            <span id="share-copied" class="hidden text-ink-soft">¡Copiado!</span>
+          </div>
+        </div>
       </div>
     </div>
+
+    <div id="consulta" class="mx-auto mt-16 max-w-xl border-t border-line pt-10">
+      <h2 class="font-serif text-2xl text-ink">Consultar por esta obra</h2>
+      <p class="mt-2 text-sm text-ink-soft">Dejanos tus datos para coordinar la compra o un encargue.</p>
+
+      <% if (typeof consultaOk !== 'undefined' && consultaOk) { %>
+        <p class="mt-4 border border-line bg-white px-4 py-2 text-sm text-ink">¡Gracias! Te vamos a contactar a la brevedad.</p>
+      <% } %>
+
+      <% const inputClass = "mt-1 block w-full border border-line bg-white px-3 py-2 text-sm text-ink focus:border-bronze focus:outline-none focus:ring-1 focus:ring-bronze"; %>
+      <% const labelClass = "block text-sm font-medium text-ink-soft"; %>
+
+      <form method="POST" action="/obras/<%= artwork.slug %>/consulta" class="mt-6 space-y-4">
+        <div>
+          <label for="contact-name" class="<%= labelClass %>">Nombre *</label>
+          <input type="text" id="contact-name" name="name" value="<%= contactValues.name || '' %>" required class="<%= inputClass %>" />
+          <% if (contactErrors.name) { %><p class="mt-1 text-sm text-red-700"><%= contactErrors.name[0] %></p><% } %>
+        </div>
+        <div>
+          <label for="contact-email" class="<%= labelClass %>">Email *</label>
+          <input type="email" id="contact-email" name="email" value="<%= contactValues.email || '' %>" required class="<%= inputClass %>" />
+          <% if (contactErrors.email) { %><p class="mt-1 text-sm text-red-700"><%= contactErrors.email[0] %></p><% } %>
+        </div>
+        <div>
+          <label for="contact-phone" class="<%= labelClass %>">Teléfono</label>
+          <input type="text" id="contact-phone" name="phone" value="<%= contactValues.phone || '' %>" class="<%= inputClass %>" />
+        </div>
+        <div>
+          <label for="contact-message" class="<%= labelClass %>">Mensaje *</label>
+          <textarea id="contact-message" name="message" rows="4" required class="<%= inputClass %>"><%= contactValues.message || '' %></textarea>
+          <% if (contactErrors.message) { %><p class="mt-1 text-sm text-red-700"><%= contactErrors.message[0] %></p><% } %>
+        </div>
+        <button type="submit" class="bg-ink px-5 py-2.5 text-sm uppercase tracking-wider text-cream hover:bg-bronze-dark">
+          Enviar consulta
+        </button>
+      </form>
+    </div>
+
+    <script>
+      (function () {
+        var url = window.location.href.split('#')[0];
+        var title = document.title;
+        var whatsapp = document.getElementById('share-whatsapp');
+        var email = document.getElementById('share-email');
+        var copyBtn = document.getElementById('share-copy');
+        var copiedLabel = document.getElementById('share-copied');
+
+        if (whatsapp) whatsapp.href = 'https://wa.me/?text=' + encodeURIComponent(title + ' ' + url);
+        if (email) email.href = 'mailto:?subject=' + encodeURIComponent(title) + '&body=' + encodeURIComponent(url);
+
+        if (copyBtn) {
+          copyBtn.addEventListener('click', function () {
+            navigator.clipboard.writeText(url).then(function () {
+              if (copiedLabel) {
+                copiedLabel.classList.remove('hidden');
+                setTimeout(function () { copiedLabel.classList.add('hidden'); }, 2000);
+              }
+            });
+          });
+        }
+      })();
+    </script>
   </main>
 
   <%- include('../../partials/footer') %>

@@ -54,6 +54,10 @@ export const artworkFormSchema = z.object({
 
 export type ArtworkFormInput = z.infer<typeof artworkFormSchema>;
 
+export const ratingSchema = z.object({
+  value: z.coerce.number().int().min(1).max(10),
+});
+
 export const THEME_OPTIONS = THEME_VALUES;
 export const STYLE_OPTIONS = STYLE_VALUES;
 export const TECHNIQUE_OPTIONS = TECHNIQUE_VALUES;

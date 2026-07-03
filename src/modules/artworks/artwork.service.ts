@@ -29,20 +29,50 @@ export function listPublicArtworks() {
   });
 }
 
-export async function getPublicArtworkBySlug(slug: string) {
-  const artwork = await prisma.artwork.findFirst({
-    where: { slug, status: { not: 'HIDDEN' } },
+function publicArtworkWhere(slug: string) {
+  return { slug, status: { not: 'HIDDEN' } } as const;
+}
+
+export function findPublicArtworkBySlug(slug: string) {
+  return prisma.artwork.findFirst({ where: publicArtworkWhere(slug) });
+}
+
+export function getPublicArtworkDetailBySlug(slug: string) {
+  return prisma.artwork.findFirst({
+    where: publicArtworkWhere(slug),
     include: { artist: true, media: { orderBy: { order: 'asc' } } },
   });
+}
 
+export async function getPublicArtworkBySlug(slug: string) {
+  const artwork = await getPublicArtworkDetailBySlug(slug);
   if (!artwork) return null;
 
   await prisma.artwork.update({
     where: { id: artwork.id },
     data: { viewsCount: { increment: 1 } },
   });
+  artwork.viewsCount += 1;
 
   return artwork;
+}
+
+export async function likeArtwork(id: string) {
+  return prisma.artwork.update({ where: { id }, data: { likesCount: { increment: 1 } } });
+}
+
+export async function rateArtwork(id: string, value: number, previousValue?: number) {
+  if (previousValue) {
+    return prisma.artwork.update({
+      where: { id },
+      data: { ratingSum: { increment: value - previousValue } },
+    });
+  }
+
+  return prisma.artwork.update({
+    where: { id },
+    data: { ratingSum: { increment: value }, ratingCount: { increment: 1 } },
+  });
 }
 
 async function generateUniqueSlug(title: string, excludeId?: string): Promise<string> {

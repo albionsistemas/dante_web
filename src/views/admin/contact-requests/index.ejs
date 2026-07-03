@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <%- include('../../partials/head', { title }) %>
+</head>
+<body class="min-h-screen bg-cream font-sans text-ink antialiased">
+  <%- include('../../partials/admin-nav') %>
+
+  <main class="mx-auto max-w-6xl px-6 py-12">
+    <p><a href="/admin" class="text-sm uppercase tracking-wider text-ink-soft hover:text-bronze">&larr; Panel</a></p>
+
+    <h1 class="mt-4 font-serif text-3xl text-ink">Consultas</h1>
+
+    <% if (requests.length === 0) { %>
+      <p class="mt-8 text-ink-soft">Todavía no hay consultas recibidas.</p>
+    <% } else { %>
+      <% const statusLabels = { PENDING: 'Pendiente', CONTACTED: 'Contactado', CLOSED: 'Cerrado' }; %>
+      <table class="mt-8 w-full border-collapse text-left text-sm">
+        <thead>
+          <tr class="border-b border-line text-xs uppercase tracking-wider text-ink-soft">
+            <th class="py-3 pr-4 font-medium">Fecha</th>
+            <th class="py-3 pr-4 font-medium">Obra</th>
+            <th class="py-3 pr-4 font-medium">Contacto</th>
+            <th class="py-3 pr-4 font-medium">Mensaje</th>
+            <th class="py-3 pr-4 font-medium">Estado</th>
+            <th class="py-3"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% requests.forEach((request) => { %>
+            <tr class="border-b border-line align-top">
+              <td class="py-3 pr-4 text-ink-soft"><%= request.createdAt.toLocaleDateString('es-AR') %></td>
+              <td class="py-3 pr-4 text-ink">
+                <a href="/obras/<%= request.artwork.slug %>" class="hover:underline" target="_blank" rel="noopener">
+                  <%= request.artwork.title %>
+                </a>
+              </td>
+              <td class="py-3 pr-4 text-ink-soft">
+                <div><%= request.name %></div>
+                <div><a href="mailto:<%= request.email %>" class="hover:underline"><%= request.email %></a></div>
+                <% if (request.phone) { %><div><%= request.phone %></div><% } %>
+              </td>
+              <td class="py-3 pr-4 max-w-sm text-ink-soft"><%= request.message %></td>
+              <td class="py-3 pr-4 text-ink-soft"><%= statusLabels[request.status] || request.status %></td>
+              <td class="py-3">
+                <form method="POST" action="/admin/consultas/<%= request.id %>?_method=PUT" class="flex flex-col gap-1">
+                  <% ['PENDING', 'CONTACTED', 'CLOSED'].forEach((value) => { %>
+                    <% if (value !== request.status) { %>
+                      <button type="submit" name="status" value="<%= value %>" class="text-left text-bronze-dark hover:underline">
+                        Marcar <%= statusLabels[value].toLowerCase() %>
+                      </button>
+                    <% } %>
+                  <% }) %>
+                </form>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    <% } %>
+  </main>
+</body>
+</html>
