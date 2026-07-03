@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <%- include('../../partials/head', { title }) %>
+</head>
+<body class="bg-cream font-sans text-ink antialiased">
+  <%- include('../../partials/nav') %>
+
+  <main class="mx-auto max-w-6xl px-6 py-16">
+    <h1 class="font-serif text-3xl text-ink sm:text-4xl">Estilos</h1>
+    <p class="mt-3 max-w-2xl text-ink-soft">
+      Una guía breve de los estilos con los que catalogamos cada obra en ArteReal: qué los distingue, cómo usan la
+      luz y el color, y qué obras de la galería son un buen ejemplo de cada uno.
+    </p>
+
+    <div class="mt-10 overflow-x-auto">
+      <table class="w-full min-w-[640px] border-collapse text-left text-sm">
+        <thead>
+          <tr class="border-b border-line text-xs uppercase tracking-wider text-ink-soft">
+            <th class="py-3 pr-4 font-medium">&nbsp;</th>
+            <% styles.forEach((style) => { %>
+              <th class="py-3 pr-4 font-medium text-ink"><%= style.label %></th>
+            <% }) %>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="border-b border-line align-top">
+            <th class="py-3 pr-4 font-medium text-ink-soft">Período</th>
+            <% styles.forEach((style) => { %><td class="py-3 pr-4"><%= style.period %></td><% }) %>
+          </tr>
+          <tr class="border-b border-line align-top">
+            <th class="py-3 pr-4 font-medium text-ink-soft">Luz</th>
+            <% styles.forEach((style) => { %><td class="py-3 pr-4"><%= style.light %></td><% }) %>
+          </tr>
+          <tr class="border-b border-line align-top">
+            <th class="py-3 pr-4 font-medium text-ink-soft">Paleta</th>
+            <% styles.forEach((style) => { %><td class="py-3 pr-4"><%= style.palette %></td><% }) %>
+          </tr>
+          <tr class="border-b border-line align-top">
+            <th class="py-3 pr-4 font-medium text-ink-soft">Temas frecuentes</th>
+            <% styles.forEach((style) => { %><td class="py-3 pr-4"><%= style.themes %></td><% }) %>
+          </tr>
+          <tr class="border-b border-line align-top">
+            <th class="py-3 pr-4 font-medium text-ink-soft">Técnica típica</th>
+            <% styles.forEach((style) => { %><td class="py-3 pr-4"><%= style.technique %></td><% }) %>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="mt-20 space-y-20">
+      <% styles.forEach((style) => { %>
+        <section id="<%= style.value.toLowerCase() %>" class="reveal border-t border-line pt-12">
+          <div class="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+            <h2 class="font-serif text-2xl text-ink"><%= style.label %></h2>
+            <span class="text-sm text-ink-soft"><%= style.period %></span>
+          </div>
+          <p class="mt-4 max-w-2xl leading-relaxed text-ink-soft"><%= style.summary %></p>
+
+          <ul class="mt-6 grid gap-x-8 gap-y-2 text-sm text-ink-soft sm:grid-cols-2">
+            <% style.characteristics.forEach((item) => { %>
+              <li class="flex gap-2"><span class="text-bronze">—</span><%= item %></li>
+            <% }) %>
+          </ul>
+
+          <p class="mt-8 text-xs uppercase tracking-wider text-ink-soft">Obras de referencia en la galería</p>
+          <% if (style.artworks.length === 0) { %>
+            <p class="mt-4 max-w-md border border-dashed border-line px-4 py-3 text-sm text-ink-soft">
+              Todavía no hay obras de este estilo cargadas en la galería.
+            </p>
+          <% } else { %>
+            <div class="mt-4 grid grid-cols-2 gap-x-8 gap-y-10 sm:grid-cols-3">
+              <% style.artworks.forEach((artwork) => { %>
+                <%- include('../../partials/artwork-card', { artwork }) %>
+              <% }) %>
+            </div>
+          <% } %>
+        </section>
+      <% }) %>
+    </div>
+  </main>
+
+  <%- include('../../partials/footer') %>
+  <%- include('../../partials/scroll-reveal') %>
+</body>
+</html>
