@@ -2,7 +2,7 @@
 <a href="/obras/<%= artwork.slug %>" class="group block">
   <div class="aspect-[4/5] overflow-hidden bg-cream-dark">
     <% if (cover && cover.type === 'IMAGE') { %>
-      <img src="<%= cover.url %>" alt="<%= artwork.title %>" class="h-full w-full object-cover transition duration-500 group-hover:scale-105" />
+      <img src="<%= cover.thumbnailUrl || cover.url %>" alt="<%= artwork.title %>" class="h-full w-full object-cover transition duration-500 group-hover:scale-105" />
     <% } else if (cover && cover.type === 'VIDEO') { %>
       <video src="<%= cover.url %>" class="h-full w-full object-cover" muted></video>
     <% } %>

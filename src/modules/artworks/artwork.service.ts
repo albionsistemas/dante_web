@@ -2,7 +2,8 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import { prisma } from '@/lib/prisma';
 import { slugify } from '@/lib/slugify';
-import { isVideoMimeType } from '@/lib/upload';
+import { ARTWORK_THUMBS_DIR, isVideoMimeType } from '@/lib/upload';
+import { createThumbnail } from '@/lib/image';
 import type { ArtworkFormInput } from '@/modules/artworks/artwork.schema';
 
 const PUBLIC_DIR = path.join(__dirname, '..', '..', '..', 'public');
@@ -103,10 +104,11 @@ export async function updateArtwork(id: string, data: ArtworkFormInput) {
 export async function deleteArtwork(id: string) {
   const media = await prisma.artworkMedia.findMany({ where: { artworkId: id } });
   await prisma.artwork.delete({ where: { id } });
-  await Promise.all(media.map((item) => deleteMediaFile(item.url)));
+  await Promise.all(media.flatMap((item) => [deleteMediaFile(item.url), deleteMediaFile(item.thumbnailUrl)]));
 }
 
-async function deleteMediaFile(url: string) {
+async function deleteMediaFile(url: string | null) {
+  if (!url) return;
   const filePath = path.join(PUBLIC_DIR, url);
   await fs.unlink(filePath).catch(() => {});
 }
@@ -120,13 +122,30 @@ export async function addArtworkMedia(artworkId: string, files: Express.Multer.F
 
   let nextOrder = (maxOrder._max.order ?? -1) + 1;
 
-  const rows = files.map((file, index) => ({
-    artworkId,
-    type: isVideoMimeType(file.mimetype) ? ('VIDEO' as const) : ('IMAGE' as const),
-    url: `/uploads/artworks/${file.filename}`,
-    isCover: existingCount === 0 && index === 0,
-    order: nextOrder++,
-  }));
+  const rows = await Promise.all(
+    files.map(async (file, index) => {
+      const isVideo = isVideoMimeType(file.mimetype);
+      let thumbnailUrl: string | null = null;
+
+      if (!isVideo) {
+        try {
+          const thumbFilename = await createThumbnail(file.path, ARTWORK_THUMBS_DIR);
+          thumbnailUrl = `/uploads/artworks/thumbs/${thumbFilename}`;
+        } catch (err) {
+          console.error(`No se pudo generar miniatura para ${file.filename}:`, err);
+        }
+      }
+
+      return {
+        artworkId,
+        type: isVideo ? ('VIDEO' as const) : ('IMAGE' as const),
+        url: `/uploads/artworks/${file.filename}`,
+        thumbnailUrl,
+        isCover: existingCount === 0 && index === 0,
+        order: nextOrder++,
+      };
+    }),
+  );
 
   await prisma.artworkMedia.createMany({ data: rows });
 }
@@ -134,6 +153,7 @@ export async function addArtworkMedia(artworkId: string, files: Express.Multer.F
 export async function deleteArtworkMedia(mediaId: string) {
   const media = await prisma.artworkMedia.delete({ where: { id: mediaId } });
   await deleteMediaFile(media.url);
+  await deleteMediaFile(media.thumbnailUrl);
 
   if (media.isCover) {
     const next = await prisma.artworkMedia.findFirst({

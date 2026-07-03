@@ -21,7 +21,7 @@ function buildHeroImages(artworks: Awaited<ReturnType<typeof listPublicArtworks>
   const covers = artworks
     .map((artwork) => artwork.media[0])
     .filter((media): media is NonNullable<typeof media> => media?.type === 'IMAGE')
-    .map((media) => media.url);
+    .map((media) => media.thumbnailUrl || media.url);
 
   if (covers.length === 0) return [];
 

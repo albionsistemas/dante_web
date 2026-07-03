@@ -37,7 +37,7 @@
               <td class="py-3 pr-4">
                 <% const cover = artwork.media[0]; %>
                 <% if (cover && cover.type === 'IMAGE') { %>
-                  <img src="<%= cover.url %>" alt="<%= artwork.title %>" class="h-12 w-12 object-cover" />
+                  <img src="<%= cover.thumbnailUrl || cover.url %>" alt="<%= artwork.title %>" class="h-12 w-12 object-cover" />
                 <% } else if (cover && cover.type === 'VIDEO') { %>
                   <span class="text-xs text-ink-soft">[video]</span>
                 <% } %>

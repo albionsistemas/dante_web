@@ -161,7 +161,7 @@
             <tr class="border-b border-line">
               <td class="py-3 pr-4">
                 <% if (item.type === 'IMAGE') { %>
-                  <img src="<%= item.url %>" alt="" class="h-16 w-16 object-cover" />
+                  <img src="<%= item.thumbnailUrl || item.url %>" alt="" class="h-16 w-16 object-cover" />
                 <% } else { %>
                   <video src="<%= item.url %>" class="h-16 w-16 object-cover" muted></video>
                 <% } %>

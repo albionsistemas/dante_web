@@ -5,9 +5,11 @@ import multer from 'multer';
 
 const ARTIST_PHOTOS_DIR = path.join(__dirname, '..', '..', 'public', 'uploads', 'artists');
 const ARTWORK_MEDIA_DIR = path.join(__dirname, '..', '..', 'public', 'uploads', 'artworks');
+export const ARTWORK_THUMBS_DIR = path.join(ARTWORK_MEDIA_DIR, 'thumbs');
 
 fs.mkdirSync(ARTIST_PHOTOS_DIR, { recursive: true });
 fs.mkdirSync(ARTWORK_MEDIA_DIR, { recursive: true });
+fs.mkdirSync(ARTWORK_THUMBS_DIR, { recursive: true });
 
 const ALLOWED_IMAGE_MIME_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp']);
 const ALLOWED_VIDEO_MIME_TYPES = new Set(['video/mp4', 'video/webm', 'video/quicktime']);

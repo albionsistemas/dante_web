@@ -142,10 +142,11 @@ model ArtworkMedia {
   artworkId String  @map("artwork_id")
   artwork   Artwork @relation(fields: [artworkId], references: [id], onDelete: Cascade)
 
-  type      ArtworkMediaType @default(IMAGE)
-  url       String
-  posterUrl String?          @map("poster_url")
-  altText   String?          @map("alt_text")
+  type         ArtworkMediaType @default(IMAGE)
+  url          String
+  thumbnailUrl String?          @map("thumbnail_url")
+  posterUrl    String?          @map("poster_url")
+  altText      String?          @map("alt_text")
   isCover   Boolean          @default(false) @map("is_cover")
   order     Int              @default(0)
 
