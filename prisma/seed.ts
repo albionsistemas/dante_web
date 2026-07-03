@@ -9,13 +9,13 @@ const prisma = new PrismaClient({ adapter });
 async function main() {
   const email = process.env.SEED_ADMIN_EMAIL ?? 'admin@dante.local';
   const password = process.env.SEED_ADMIN_PASSWORD ?? 'change-me-123';
-  const name = process.env.SEED_ADMIN_NAME ?? 'Admin DANTE';
+  const name = process.env.SEED_ADMIN_NAME ?? 'Admin ArteReal';
 
   const passwordHash = await bcrypt.hash(password, 10);
 
   const admin = await prisma.admin.upsert({
     where: { email },
-    update: {},
+    update: { name },
     create: { email, passwordHash, name, role: 'SUPER_ADMIN' },
   });
 
